@@ -5,6 +5,13 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const generateAccessToken = (employee) => {
+  const token = jwt.sign(employee, process.env.ACCESS_TOKEN, {
+    expiresIn: "10h",
+  });
+  return token;
+};
+
 const registerEmployee = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -30,7 +37,14 @@ const registerEmployee = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    //empid auto increment
+    const getLastEmployeeId = await Employee.findOne({})
+      .sort({ empid: -1 })
+      .limit(1);
+    const empid = getLastEmployeeId.empid + 1;
+
     const employee = new Employee({
+      empid,
       name,
       email,
       password: hashedPassword,
@@ -51,12 +65,6 @@ const registerEmployee = async (req, res) => {
   }
 };
 
-const generateAccessToken = (employee) => {
-  const token = jwt.sign(employee, process.env.ACCESS_TOKEN, {
-    expiresIn: "10h",
-  });
-  return token;
-};
 const loginEmployee = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -109,4 +117,55 @@ const loginEmployee = async (req, res) => {
   }
 };
 
-module.exports = { registerEmployee, loginEmployee };
+const getProfile = async (req, res) => {
+  const employee_Id = req.employee.empid;
+  const employeeData = await Employee.findOne({ empid: employee_Id });
+
+  try {
+    return res.status(200).json({
+      success: true,
+      msg: "Profile Data",
+      data: employeeData,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+const deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Check if the employee exists
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({
+        success: false,
+        msg: "Employee not found",
+      });
+    }
+
+    // Delete the employee
+    await Employee.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      msg: "Employee deleted successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+module.exports = {
+  registerEmployee,
+  loginEmployee,
+  getProfile,
+  deleteEmployee,
+};

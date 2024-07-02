@@ -12,11 +12,17 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
+//main routes
 const authRoute = require("./routes/authRoute");
 app.use("/api", authRoute);
 
+//admin routes
 const adminRoute = require("./routes/adminRoute");
 app.use("/api/admin", adminRoute);
+
+//common routes
+const commonRoute = require("./routes/commonRoute");
+app.use("/api", commonRoute);
 
 app.listen(port, () => {
   console.log(`Server is works on port http://localhost:${port}`);
