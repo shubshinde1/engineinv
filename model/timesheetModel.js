@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 
 const timesheetSchema = new mongoose.Schema(
   {
+    employee_id: {
+      type: mongoose.Schema.Types.ObjectId, //employee model object reference to realtion
+      ref: "Employee",
+    },
     empid: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Number, //employee model reference to store builted empid
       ref: "Employee",
       require: true,
     },

@@ -1,4 +1,5 @@
 const Timesheet = require("../model/timesheetModel");
+const Employee = require("../model/employeeModel");
 const { validationResult } = require("express-validator");
 
 const fillTimesheet = async (req, res) => {
@@ -13,11 +14,27 @@ const fillTimesheet = async (req, res) => {
       });
     }
 
-    const { date, taskName, subTaskName, description, duration } = req.body;
+    const { employee_id, date, taskName, subTaskName, description, duration } =
+      req.body;
+
+    const employee = await Employee.findOne({ _id: employee_id });
+
+    if (!employee) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not Exist",
+      });
+    }
+
+    console.log(employee.empid);
+
+    const empid = employee.empid;
 
     // Create a new TimeSheet document
     const newTimeSheet = new Timesheet({
       // Assuming empid is already populated correctly in req.body
+      employee_id,
+      empid,
       date,
       taskName,
       subTaskName,
@@ -45,7 +62,7 @@ const fillTimesheet = async (req, res) => {
 
 const viewTimesheet = async (req, res) => {
   try {
-    const timesheetData = await Timesheet.find({});
+    const timesheetData = await Timesheet.find({}).populate("employee_id");
 
     return res.status(200).json({
       success: true,
@@ -136,7 +153,7 @@ const updateTimesheet = async (req, res) => {
         },
       },
       { new: true }
-    );
+    ).populate("employee_id");
 
     return res.status(200).json({
       success: true,

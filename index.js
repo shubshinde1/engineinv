@@ -12,13 +12,13 @@ app.use(express.json());
 
 app.use(express.static("public"));
 
-//main routes
-const authRoute = require("./routes/authRoute");
-app.use("/api", authRoute);
-
 //admin routes
 const adminRoute = require("./routes/adminRoute");
 app.use("/api/admin", adminRoute);
+
+//main emp loging routes
+const authRoute = require("./routes/authRoute");
+app.use("/api", authRoute);
 
 //common routes
 const commonRoute = require("./routes/commonRoute");
