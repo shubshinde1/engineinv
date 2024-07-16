@@ -37,12 +37,6 @@ const registerEmployee = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //empid auto increment
-    const getLastEmployeeId = await Employee.findOne({})
-      .sort({ empid: -1 })
-      .limit(1);
-    const empid = getLastEmployeeId.empid + 1;
-
     const employee = new Employee({
       empid,
       name,
@@ -84,7 +78,7 @@ const loginEmployee = async (req, res) => {
     if (!employeeData) {
       return res.status(400).json({
         success: false,
-        msg: "Email and Password is incorrect",
+        msg: "Invalid Email And Password",
       });
     }
 
@@ -96,18 +90,21 @@ const loginEmployee = async (req, res) => {
     if (!isPasswordMatch) {
       return res.status(400).json({
         success: false,
-        msg: "Email and Password is incorrect",
+        msg: "Invalid Email And Password",
       });
     }
 
     const asscessToken = generateAccessToken({ employee: employeeData });
 
+    const empdata = { asscessToken, employeeData };
+
     return res.status(200).json({
       success: true,
       msg: "Login Successfully",
       accessToken: asscessToken,
+      usertype: employeeData.auth,
       tokenType: "Bearer",
-      data: employeeData,
+      data: empdata,
     });
   } catch (error) {
     return res.status(400).json({

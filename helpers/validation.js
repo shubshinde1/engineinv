@@ -1,4 +1,4 @@
-const { check } = require("express-validator");
+const { check, validationResult } = require("express-validator");
 
 exports.registerValidator = [
   check("name", "Name is required").not().isEmpty(),
@@ -15,12 +15,45 @@ exports.loginValidator = [
   check("password", "Password is required").not().isEmpty(),
 ];
 
-exports.createUserValidator = [
-  check("name", "Name is required").not().isEmpty(),
+exports.forgotPasswordValidator = [
   check("email", "Email is required").isEmail().normalizeEmail({
     gmail_remove_dots: true,
   }),
+  // check("password", "Password is required").not().isEmpty(),
 ];
+
+exports.createUserValidator = [
+  check("name", "Name is required").not().isEmpty(),
+  check("phone", "Phone is required").not().isEmpty(),
+  check("password", "password is required").not().isEmpty(),
+  check("email", "Email is required")
+    .isEmail()
+    .normalizeEmail({
+      gmail_remove_dots: true,
+    })
+    .custom((value) => {
+      if (!value.endsWith("@invezzatechnologies.com")) {
+        return res.status(400).json({
+          success: false,
+          msg: "Outside mail ID is not acceptable",
+          errors: errors.array(),
+        });
+      }
+      return true;
+    }),
+];
+
+exports.validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      msg: "Your mail should ends with @invezzatechnologies.com",
+      errors: errors.array(),
+    });
+  }
+  next();
+};
 
 exports.updateUserValidator = [
   check("id", "id is required").not().isEmpty(),

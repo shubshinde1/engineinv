@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Not Found</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f3f4f6;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .error-code {
+        font-size: 10rem;
+        font-weight: 700;
+        color: #2563eb;
+      }
+      .error-text {
+        font-size: 1.5rem;
+        color: #4b5563;
+        text-align: center;
+      }
+      .button-container {
+        margin-top: 2rem;
+      }
+      .button {
+        padding: 0.75rem 1.5rem;
+        background-color: #3b82f6;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 0.5rem;
+        transition: background-color 0.3s ease;
+      }
+      .button:hover {
+        background-color: #2563eb;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="text-center flex flex-col items-center">
+        <img
+          src="/assets/images/invezza-logo.png"
+          class="w-2/4 mb-4"
+          alt="Invezza Logo"
+        />
+        <!-- <p class="error-text font-bold">
+          Are you sure that you use valid Link? 🤔
+        </p> -->
+        <h1 class="error-code">404 🤔</h1>
+        <!-- <h1 class="text-red-500">Might Be Broken or expired Link</h1> -->
+        <p class="error-text">
+          Link/URL Might Be
+          <span style="color: #2563eb" class="font-bold">Expired</span> or
+          <span style="color: #2563eb" class="font-bold">Broken!..</span>
+        </p>
+      </div>
+      <!-- <div class="button-container">
+        <a href="/" class="button">Go to Home Page</a>
+      </div> -->
+    </div>
+  </body>
+</html>

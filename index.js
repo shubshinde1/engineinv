@@ -3,11 +3,30 @@ const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_CONNECT);
 // mongoose.connect("mongodb://localhost:27017/invhrms");
 
+let ejs = require("ejs");
+
 const port = 4000;
 
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
+app.set("view engine", "ejs");
+app.set("views", "./views");
+
+const allowedOrigins = [
+  "http://192.168.1.37:5173",
+  "http://localhost:5173",
+  "http://172.30.32.1:5173",
+];
+
+const corsOptions = {
+  origin: "*" || allowedOrigins,
+  methodS: "GET, POST, PUT, DELETE, PATCH, HEAD",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use(express.static("public"));

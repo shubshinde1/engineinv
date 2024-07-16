@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express();
 
+router.use(express.json());
+
+const bodyParser = require("body-parser");
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+
 const auth = require("../middleware/authMiddleware");
 
 const { onlyAdminAccess } = require("../middleware/adminMiddleware");
@@ -13,6 +19,7 @@ const {
 
 const {
   createUserValidator,
+  validate,
   updateUserValidator,
   deleteUserValidator,
   employeeAttendanceValidator,
@@ -51,8 +58,9 @@ router.post(
 // create user routes
 router.post(
   "/createuser",
-  auth,
+  // auth,
   createUserValidator,
+  validate,
   userController.createUser
 );
 router.get("/viewusers", auth, userController.viewUser);
@@ -83,5 +91,9 @@ router.post(
   // ViewAttendanceValidator,
   attendanceController.viewEmployeeAttendance
 );
+
+router.get("/resetpassword", userController.resetPassword);
+router.post("/resetpassword", userController.updatePassword);
+// router.post("/resetsuccess", userController.resetSuccess);
 
 module.exports = router;

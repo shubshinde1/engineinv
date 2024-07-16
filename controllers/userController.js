@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 
 const Employee = require("../model/employeeModel");
+const PasswordReset = require("../model/passwordReset");
 
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
@@ -19,7 +20,7 @@ const createUser = async (req, res) => {
       });
     }
 
-    const { name, email } = req.body;
+    const { name, email, phone, password } = req.body;
 
     const isExist = await Employee.findOne({ email });
 
@@ -30,13 +31,14 @@ const createUser = async (req, res) => {
       });
     }
 
-    const rowpassword = randomstring.generate(10);
+    // const rowpassword = randomstring.generate(10);
     // const rowpassword = "Tomhardy@12";
-    const hashPassword = await bcrypt.hash(rowpassword, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
 
     var obj = {
       name,
       email,
+      phone,
       password: hashPassword,
     };
 
@@ -58,7 +60,7 @@ const createUser = async (req, res) => {
     <p>Employee id - ${EmployeeData.empid}</br>
     User Name - ${EmployeeData.name}</br>
     Email - ${EmployeeData.email}</br>
-    Password - ${rowpassword}</p>
+    Password - ${password}</p>
     <p style="color:red">Note:Please never shaer your password with anyone</p>
     <span>Best Regards,</span><br>
     <span style="font-size: 1rem: font-weight: 700;">Team Invezza</span>`;
@@ -81,6 +83,128 @@ const createUser = async (req, res) => {
     });
   }
 };
+
+const forgotPassword = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(200).json({
+        success: false,
+        msg: "Errors",
+        errors: errors.array(),
+      });
+    }
+
+    const { email } = req.body;
+
+    const userData = await Employee.findOne({ email });
+
+    if (!userData) {
+      return res.status(400).json({
+        success: false,
+        msg: "Email id does not exist!..",
+      });
+    }
+
+    const randonString = randomstring.generate();
+
+    const msg =
+      "<p>Hii " +
+      userData.name +
+      ', Please click <a href="http://localhost:4000/api/resetpassword?token=' +
+      randonString +
+      '">Here<a/> to reset your Inezaa HRMS Portal password<p/>';
+
+    await PasswordReset.deleteMany({ emp_id: userData._id });
+
+    const passwordReset = new PasswordReset({
+      emp_id: userData._id,
+      token: randonString,
+    });
+
+    await passwordReset.save();
+
+    sendMail(userData.email, "Reset Password", msg);
+
+    return res.status(200).json({
+      success: true,
+      msg: "Reset password link send to your mail",
+      data: userData,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    if (req.query.token == undefined) {
+      return res.render("400");
+    }
+
+    const resetData = await PasswordReset.findOne({ token: req.query.token });
+
+    if (!resetData) {
+      return res.render("404");
+    }
+
+    return res.render("resetpassword", {
+      resetData,
+    });
+  } catch (error) {
+    return res.render("404");
+    // .json({
+    //   success: false,
+    //   msg: error.message,
+    // });
+  }
+};
+
+const updatePassword = async (req, res) => {
+  try {
+    const { emp_id, password, confirmpassword } = req.body;
+
+    const resetData = await PasswordReset.findOne({ emp_id });
+
+    console.log(resetData);
+
+    if (password != confirmpassword) {
+      return res.render("resetpassword", {
+        resetData,
+        error: "Confirm password Not match",
+      });
+    }
+
+    const newHashedPassword = await bcrypt.hash(confirmpassword, 10);
+
+    await Employee.findByIdAndUpdate(
+      { _id: emp_id },
+      {
+        $set: {
+          password: newHashedPassword,
+        },
+      }
+    );
+
+    await PasswordReset.deleteMany({ emp_id });
+
+    return res.render("resetsuccess");
+  } catch (error) {
+    return res.render("404");
+  }
+};
+
+// const resetSuccess = async (req, res) => {
+//   try {
+//     return res.render("resetsuccess");
+//   } catch (error) {
+//     return res.render("404");
+//   }
+// };
 
 const viewUser = async (req, res) => {
   try {
@@ -219,4 +343,13 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { createUser, viewUser, updateUser, deleteUser };
+module.exports = {
+  createUser,
+  forgotPassword,
+  viewUser,
+  updateUser,
+  deleteUser,
+  resetPassword,
+  // resetSuccess,
+  updatePassword,
+};
