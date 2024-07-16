@@ -43,6 +43,6 @@ app.use("/api", authRoute);
 const commonRoute = require("./routes/commonRoute");
 app.use("/api", commonRoute);
 
-app.listen(port, () => {
-  console.log(`Server is works on port http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Server is works on port http://localhost:${process.env.PORT}`);
 });
