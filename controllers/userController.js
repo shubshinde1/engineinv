@@ -112,7 +112,7 @@ const forgotPassword = async (req, res) => {
     const msg =
       "<p>Hii " +
       userData.name +
-      ', Please click <a href="http://localhost:4000/api/resetpassword?token=' +
+      ', Please click <a href="http://localhost:3000/api/resetpassword?token=' +
       randonString +
       '">Here<a/> to reset your Inezaa HRMS Portal password<p/>';
 
