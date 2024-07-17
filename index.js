@@ -19,9 +19,7 @@ const allowedOrigins = [
   "http://localhost:5173/login",
   "http://172.30.32.1:5173",
   "https://invezzahrms.shub.space",
-  "https://web.postman.co/workspace/invezzahrms~2566b061-a24b-4da1-8e29-cbe4f4d92ade/request/create?requestId=475e63c0-f4e9-481d-92f5-0e56c1458108",
-  "https://engineinv-shubshinde1s-projects.vercel.app/api/login",
-  "https://engineinv.shub.space",
+  "https://engineinv.vercel.app",
 ];
 
 const corsOptions = {
