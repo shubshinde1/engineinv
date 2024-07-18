@@ -239,7 +239,7 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const { id, name } = req.body;
+    const { id, name, password, phone, status } = req.body;
 
     const isExist = await Employee.findOne({ _id: id });
 
@@ -252,11 +252,14 @@ const updateUser = async (req, res) => {
 
     var updateObj = {
       name,
+      password,
+      phone,
+      status,
     };
 
-    if (req.body.auth != 1) {
-      updateObj.auth = req.body.auth;
-    }
+    // if (req.body.auth != 1) {
+    //   updateObj.auth = req.body.auth;
+    // }
 
     const newPassword = req.body.password;
     if (newPassword) {
@@ -281,6 +284,7 @@ const updateUser = async (req, res) => {
     <p>Your Invezza HRMS portal account details has been updated successfully!..<br>Here is your new account details</p>
     <p>Employee Id - ${updatedEmployeeData.empid}</br>
     User Name - ${updatedEmployeeData.name}</br>
+    Email ID - ${updatedEmployeeData.email}</br>
     Password - ${newPassword}</p>
     <p style="color:red">Note:Please never shaer your password with anyone</p>
     <span>Best Regards,</span><br>

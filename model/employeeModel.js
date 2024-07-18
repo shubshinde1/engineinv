@@ -19,6 +19,9 @@ const employeeSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    profile: {
+      type: String,
+    },
     status: {
       type: Number,
       default: 1, // 1 = active, 0 = inactive
