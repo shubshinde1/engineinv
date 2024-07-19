@@ -16,14 +16,14 @@ app.set("views", "./views");
 
 const allowedOrigins = [
   "http://192.168.1.37:5173",
-  "http://localhost:5173/login",
+  "http://localhost:5173",
   "http://172.30.32.1:5173",
   "https://invezzahrms.shub.space",
   "https://engineinv.vercel.app",
 ];
 
 const corsOptions = {
-  origin: "*" || allowedOrigins,
+  origin: allowedOrigins,
   methodS: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
 };
