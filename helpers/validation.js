@@ -65,3 +65,8 @@ exports.deleteUserValidator = [check("id", "id is required").not().isEmpty()];
 exports.employeeAttendanceValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
 ];
+
+exports.addemployeeDetailsValidator = [
+  check("eid", "id is required").not().isEmpty(),
+  check("gender", "gender is required").not().isEmpty(),
+];

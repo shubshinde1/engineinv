@@ -17,6 +17,7 @@ const {
   registerValidator,
   loginValidator,
   forgotPasswordValidator,
+  addemployeeDetailsValidator,
 } = require("../helpers/validation");
 
 router.post(
@@ -35,6 +36,12 @@ router.post(
   "/forgotpassword",
   forgotPasswordValidator,
   userController.forgotPassword
+);
+router.post(
+  "/employeedetails",
+  auth,
+  addemployeeDetailsValidator,
+  authController.employeedetails
 );
 
 router.get("/profile", auth, authController.getProfile);

@@ -30,6 +30,14 @@ const timesheetSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    remark: {
+      type: String,
+      require: true,
+    },
+    projectname: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+    },
   },
   {
     timestamps: true,

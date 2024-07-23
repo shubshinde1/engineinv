@@ -1,38 +1,12 @@
 const mongoose = require("mongoose");
-const mongoSequence = require("mongoose-sequence");
 
-const employeeSchema = new mongoose.Schema(
+const employeeDetailsSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
+    eid: {
+      type: mongoose.Schema.Types.ObjectId,
       require: true,
+      ref: "Employee",
     },
-    email: {
-      type: String,
-      require: true,
-    },
-    password: {
-      type: String,
-      require: true,
-    },
-    phone: {
-      type: Number,
-      default: 0,
-    },
-    profile: {
-      type: String,
-    },
-    status: {
-      type: Number,
-      default: 1, // 1 = active, 0 = inactive
-    },
-    auth: {
-      type: Number,
-      default: 0, //0 emp 1 admin
-    },
-
-    // employee details
-
     dob: {
       type: String,
       require: true,
@@ -53,7 +27,7 @@ const employeeSchema = new mongoose.Schema(
     dateofjoining: {
       type: String,
     },
-    designation: {
+    desiganation: {
       type: String,
     },
     department: {
@@ -109,37 +83,62 @@ const employeeSchema = new mongoose.Schema(
     },
 
     // work experience
-    workexperience: [
-      {
-        jobtitle: {
-          type: String,
-        },
-        companyname: {
-          type: String,
-        },
-        companylinkedinurl: {
-          type: String,
-        },
-        employeementtype: {
-          type: String,
-        },
-        startdate: {
-          type: String,
-        },
-        enddate: {
-          type: String,
-        },
-        description: {
-          type: String,
-        },
-      },
-    ],
+
+    jobtitle: {
+      type: String,
+    },
+    companyname: {
+      type: String,
+    },
+    companylinkedinurl: {
+      type: String,
+    },
+    employeementtype: {
+      type: String,
+    },
+    startdate: {
+      type: String,
+    },
+    enddate: {
+      type: String,
+    },
+    description: {
+      type: String,
+    },
+
+    //documents
+
+    adharcard: {
+      type: String,
+    },
+    pancard: {
+      type: String,
+    },
+    addressproof: {
+      type: String,
+    },
+    electricitybil: {
+      type: String,
+    },
+    previousorgofferlatter: {
+      type: String,
+    },
+    previousorgexperiencelatter: {
+      type: String,
+    },
+    payslip1: {
+      type: String,
+    },
+    payslip2: {
+      type: String,
+    },
+    payslip3: {
+      type: String,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-employeeSchema.plugin(mongoSequence(mongoose), { inc_field: "empid" });
-
-module.exports = mongoose.model("Employee", employeeSchema);
+module.exports = mongoose.model("EmployeeDetail", employeeDetailsSchema);

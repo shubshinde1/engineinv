@@ -239,7 +239,35 @@ const updateUser = async (req, res) => {
       });
     }
 
-    const { id, name, password, phone, status } = req.body;
+    const {
+      id,
+      name,
+      password,
+      phone,
+      status,
+      dob,
+      gender,
+      maritialstatus,
+      bloodgroup,
+      dateofjoining,
+      designation,
+      department,
+      reportingto,
+      teamleader,
+      techexperties,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      emergencypersonname,
+      relation,
+      profession,
+      emergencypersonaddress,
+      emergencypersonemail,
+      emergencypersonphone,
+      workexperience,
+    } = req.body;
 
     const isExist = await Employee.findOne({ _id: id });
 
@@ -255,6 +283,33 @@ const updateUser = async (req, res) => {
       password,
       phone,
       status,
+      id,
+      name,
+      password,
+      phone,
+      status,
+      dob,
+      gender,
+      maritialstatus,
+      bloodgroup,
+      dateofjoining,
+      designation,
+      department,
+      reportingto,
+      teamleader,
+      techexperties,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      emergencypersonname,
+      relation,
+      profession,
+      emergencypersonaddress,
+      emergencypersonemail,
+      emergencypersonphone,
+      workexperience,
     };
 
     // if (req.body.auth != 1) {
