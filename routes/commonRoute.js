@@ -13,6 +13,7 @@ const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 
 const {
   timesheetAddValidator,
+  getTimesheetByDateValidator,
   timesheetDeleteValidator,
   timesheetUpdateValidator,
 } = require("../helpers/adminValidator");
@@ -38,6 +39,14 @@ router.post(
   timesheetAddValidator,
   timesheetController.fillTimesheet
 );
+router.post(
+  "/gettimesheetbydate",
+  auth,
+  getTimesheetByDateValidator,
+  timesheetController.getTimesheetByDate
+);
+
+router.get("/getprojectdetails", auth, timesheetController.getProjectDetails);
 
 router.get("/viewtimesheet", auth, timesheetController.viewTimesheet);
 

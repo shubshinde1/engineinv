@@ -22,6 +22,9 @@ exports.timesheetAddValidator = [
   check("description", "Add description to your efforts").not().isEmpty(),
   check("duration", "Specify your duration on this task").not().isEmpty(),
 ];
+exports.getTimesheetByDateValidator = [
+  check("employee_id", "employee_id is required").not().isEmpty(),
+];
 
 exports.timesheetDeleteValidator = [
   check("id", "Id is required to delete").not().isEmpty(),
