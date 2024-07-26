@@ -17,6 +17,10 @@ const timesheetSchema = new mongoose.Schema(
     },
     task: [
       {
+        timesheet_id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "TimeSheet",
+        },
         taskName: {
           type: String,
           require: true,
@@ -29,7 +33,7 @@ const timesheetSchema = new mongoose.Schema(
           require: true,
         },
         duration: {
-          type: String,
+          type: Number,
           require: true,
         },
         remark: {

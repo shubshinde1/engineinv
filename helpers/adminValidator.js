@@ -17,22 +17,55 @@ exports.permissionUpdateValidator = [
 
 exports.timesheetAddValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
-  check("date", "date is required").not().isEmpty().toDate(),
-  check("taskName", "taskName is required").not().isEmpty(),
-  check("description", "Add description to your efforts").not().isEmpty(),
-  check("duration", "Specify your duration on this task").not().isEmpty(),
+  check("date", "date is required but should be before today's date")
+    .not()
+    .isEmpty()
+    .toDate()
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+      if (inputDate > currentDate) {
+        throw new Error("Date cannot be in the future");
+      }
+      return true;
+    }),
+  check("taskName", "Task Name is required").not().isEmpty(),
+  check("description", "Add description to your task").not().isEmpty(),
+  check("duration", "Add duration of your task").not().isEmpty(),
+  check("project", "Specify your working project").not().isEmpty(),
+  check("remark", "Specify your task status").not().isEmpty(),
 ];
+
 exports.getTimesheetByDateValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
 ];
 
 exports.timesheetDeleteValidator = [
-  check("id", "Id is required to delete").not().isEmpty(),
+  check("timesheetId", "timesheetId is required to delete").not().isEmpty(),
+  check("taskId", "taskId is required to delete").not().isEmpty(),
 ];
 
 exports.timesheetUpdateValidator = [
-  check("id", "Id is required to delete").not().isEmpty(),
+  check("timesheet_id", "timesheet_id is required to update").not().isEmpty(),
+  check("task_id", "task_id is required to update").not().isEmpty(),
   check("taskName", "taskName is required").not().isEmpty(),
+  check("date", "date is required")
+    .not()
+    .isEmpty()
+    .isISO8601()
+    .withMessage("Invalid date format")
+    .toDate()
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+      const fiveDaysAgo = new Date(
+        currentDate.setDate(currentDate.getDate() - 5)
+      );
+      if (inputDate < fiveDaysAgo) {
+        throw new Error("Sorry.. tasks older than 5 days cannot be updated");
+      }
+      return true;
+    }),
 ];
 
 exports.storeRoleValidator = [
