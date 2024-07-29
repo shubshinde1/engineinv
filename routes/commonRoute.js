@@ -45,6 +45,12 @@ router.post(
   getTimesheetByDateValidator,
   timesheetController.getTimesheetByDate
 );
+router.post(
+  "/gettimesheetdays",
+  auth,
+  getTimesheetByDateValidator,
+  timesheetController.getTimesheetdays
+);
 
 router.get("/getprojectdetails", auth, timesheetController.getProjectDetails);
 

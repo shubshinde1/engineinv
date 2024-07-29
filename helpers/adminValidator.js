@@ -17,15 +17,21 @@ exports.permissionUpdateValidator = [
 
 exports.timesheetAddValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
-  check("date", "date is required but should be before today's date")
+  check("date", "date is required and should be within the last 5 days")
     .not()
     .isEmpty()
     .toDate()
     .custom((value) => {
       const inputDate = new Date(value);
       const currentDate = new Date();
+      const fiveDaysAgo = new Date(currentDate);
+      fiveDaysAgo.setDate(currentDate.getDate() - 5);
+
       if (inputDate > currentDate) {
         throw new Error("Date cannot be in the future");
+      }
+      if (inputDate < fiveDaysAgo) {
+        throw new Error("Sorry.. Date cannot add tasks older than 5 days");
       }
       return true;
     }),
@@ -43,6 +49,21 @@ exports.getTimesheetByDateValidator = [
 exports.timesheetDeleteValidator = [
   check("timesheetId", "timesheetId is required to delete").not().isEmpty(),
   check("taskId", "taskId is required to delete").not().isEmpty(),
+  check("date", "date is required and should be within the last 5 days")
+    .not()
+    .isEmpty()
+    .toDate()
+    .custom((value) => {
+      const inputDate = new Date(value);
+      const currentDate = new Date();
+      const fiveDaysAgo = new Date(currentDate);
+      fiveDaysAgo.setDate(currentDate.getDate() - 5);
+
+      if (inputDate < fiveDaysAgo) {
+        throw new Error("You can not delete task older than 5 days");
+      }
+      return true;
+    }),
 ];
 
 exports.timesheetUpdateValidator = [
@@ -62,7 +83,7 @@ exports.timesheetUpdateValidator = [
         currentDate.setDate(currentDate.getDate() - 5)
       );
       if (inputDate < fiveDaysAgo) {
-        throw new Error("Sorry.. tasks older than 5 days cannot be updated");
+        throw new Error("Sorry.. You can not update task older than 5 days");
       }
       return true;
     }),

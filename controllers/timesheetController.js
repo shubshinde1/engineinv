@@ -195,6 +195,41 @@ const getTimesheetByDate = async (req, res) => {
   }
 };
 
+const getTimesheetdays = async (req, res) => {
+  const { employee_id } = req.body;
+
+  if (!employee_id) {
+    return res.status(400).json({
+      success: false,
+      msg: "Missing required request body parameters",
+    });
+  }
+
+  try {
+    // Fetch timesheets for the given employee_id and include only those where the task array length is 0 or more than 0
+    const timesheets = await Timesheet.find({
+      employee_id,
+      $or: [{ "task.0": { $exists: true } }, { task: { $size: 1 } }],
+    })
+      .select("date task") // Select the date and task fields
+      .lean(); // Use lean() to get plain JavaScript objects
+
+    // Extract and return the dates
+    const dates = timesheets.map((timesheet) => timesheet.date);
+
+    return res.status(200).json({
+      success: true,
+      dates,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      msg: "Server error",
+    });
+  }
+};
+
 const viewTimesheet = async (req, res) => {
   try {
     const timesheetData = await Timesheet.find({}).populate(
@@ -488,4 +523,5 @@ module.exports = {
   deleteTimesheet,
   updateTimesheet,
   getProjectDetails,
+  getTimesheetdays,
 };
