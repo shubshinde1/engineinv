@@ -70,3 +70,24 @@ exports.addemployeeDetailsValidator = [
   check("eid", "id is required").not().isEmpty(),
   check("gender", "gender is required").not().isEmpty(),
 ];
+
+exports.addLeavesValidator = [
+  check("optionalholiday", "Add atleast one Optional holidays ")
+    .isArray()
+    .custom(
+      (value) =>
+        value.length > 0 &&
+        value.every((holiday) => holiday.name && holiday.date)
+    ),
+  check("mandatoryholiday", "Add atleast one Mandatory holidays")
+    .isArray()
+    .custom(
+      (value) =>
+        value.length > 0 &&
+        value.every(
+          (holiday) => holiday.name && holiday.date && holiday.greeting
+        )
+    ),
+];
+
+exports.addHolidayValidator = [];

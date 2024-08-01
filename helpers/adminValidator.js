@@ -31,7 +31,9 @@ exports.timesheetAddValidator = [
         throw new Error("Date cannot be in the future");
       }
       if (inputDate < fiveDaysAgo) {
-        throw new Error("Sorry.. Date cannot add tasks older than 5 days");
+        throw new Error(
+          "Sorry.. tasks cannot be added for dates older than 5 days."
+        );
       }
       return true;
     }),

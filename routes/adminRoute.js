@@ -7,6 +7,7 @@ const permissionController = require("../controllers/admin/permissionController"
 const roleController = require("../controllers/admin/roleController");
 const clientController = require("../controllers/admin/clientController");
 const projectController = require("../controllers/admin/projectController");
+const leaveAddController = require("../controllers/admin/leaveAddController");
 
 const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 
@@ -20,6 +21,11 @@ const {
   addProjectValidator,
   updateProjectValidator,
 } = require("../helpers/adminValidator");
+
+const {
+  addLeavesValidator,
+  addHolidayValidator,
+} = require("../helpers/validation");
 
 //this routes only accessible from admin role
 router.post(
@@ -111,6 +117,22 @@ router.get(
   auth,
   onlyAdminAccess,
   projectController.viewPorject
+);
+
+//leave managemant routes
+router.post(
+  "/addleaves",
+  auth,
+  onlyAdminAccess,
+  addLeavesValidator,
+  leaveAddController.addLeaves
+);
+router.post(
+  "/addholidays",
+  auth,
+  onlyAdminAccess,
+  addHolidayValidator,
+  leaveAddController.addHolidays
 );
 
 module.exports = router;
