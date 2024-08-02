@@ -9,10 +9,7 @@ const addLeaves = async (req, res) => {
     // Get all employee data from the Employee model
     const employees = await Employee.find().select("_id dateofjoining");
 
-    const desiredYear = 2025;
-
     const currentDate = new Date();
-    // currentDate.setFullYear(desiredYear);
     console.log(currentDate.toDateString());
     const currentYear = currentDate.getFullYear();
     const endOfMarch = new Date(currentYear, 2, 31); // March 31 of the current year
@@ -33,14 +30,9 @@ const addLeaves = async (req, res) => {
       return Math.round(value * 2) / 2;
     };
 
-    // Filter out the employee with the specific _id
-    const filteredEmployees = employees.filter(
-      (employee) => employee._id.toString() !== EXCLUDE_ID
-    );
-
     // Process each employee
     await Promise.all(
-      filteredEmployees.map(async (employee) => {
+      employees.map(async (employee) => {
         const employee_id = employee._id;
         const dateOfJoining = new Date(employee.dateofjoining);
         const probationEndDate = new Date(dateOfJoining);
@@ -132,6 +124,7 @@ const addLeaves = async (req, res) => {
     }
   }
 };
+
 addLeaves();
 // Optionally, uncomment to run this function every year on April 1st
 // setInterval(addLeaves, 365 * 24 * 60 * 60 * 1000); // 365 days in milliseconds
@@ -176,9 +169,7 @@ const addHolidays = async (req, res) => {
         // Save the updated leave record
         await leaveRecord.save();
 
-        console.log(
-          `Updated leave record for employee _id: ${leaveRecord.employee_id}`
-        );
+        console.log("Holidays added for all employees");
       })
     );
 
@@ -196,7 +187,53 @@ const addHolidays = async (req, res) => {
   }
 };
 
+const viewHolidays = async (req, res) => {
+  try {
+    const { employee_id } = req.body;
+
+    // Validate that employee_id is provided
+    if (!employee_id) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee ID is required",
+      });
+    }
+
+    // Find the leave balance record for the specified employee_id
+    const leaveRecord = await leavebalance.findOne({ employee_id });
+
+    // Check if a record was found
+    if (!leaveRecord) {
+      return res.status(404).json({
+        success: false,
+        msg: `No leave records found for employee_id: ${employee_id}`,
+      });
+    }
+
+    // Create a response structure with the holidays
+    const holidays = {
+      employee_id: leaveRecord.employee_id,
+      optionalholiday: leaveRecord.optionalholiday,
+      mandatoryholiday: leaveRecord.mandatoryholiday,
+      weekendHoliday: leaveRecord.weekendHoliday,
+    };
+
+    res.status(200).json({
+      success: true,
+      holidays: holidays,
+    });
+  } catch (error) {
+    console.error("Error viewing holidays:", error);
+    res.status(500).json({
+      success: false,
+      msg: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addLeaves,
   addHolidays,
+  viewHolidays,
 };

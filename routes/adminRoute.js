@@ -134,5 +134,11 @@ router.post(
   addHolidayValidator,
   leaveAddController.addHolidays
 );
+router.post(
+  "/viewholidays",
+  auth,
+  onlyAdminAccess,
+  leaveAddController.viewHolidays
+);
 
 module.exports = router;
