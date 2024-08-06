@@ -251,7 +251,7 @@ const viewHolidays = async (req, res) => {
   }
 };
 
-cron.schedule("52 12 6 * *", () => {
+cron.schedule("58 12 6 * *", () => {
   addLeaves();
   console.log("Scheduled addLeaves task executed on the 1st day of the month.");
 });
