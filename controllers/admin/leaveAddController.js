@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const leavebalance = require("../../model/leaveBalanceModel");
 const Employee = require("../../model/employeeModel");
+const cron = require("node-cron");
 
 const EXCLUDE_ID = "6687d8abecc0bcb379e20227"; // Admin _id exclude
 
@@ -10,7 +11,6 @@ const addLeaves = async (req, res) => {
     const employees = await Employee.find().select("_id dateofjoining");
 
     const currentDate = new Date();
-    console.log(currentDate.toDateString());
     const currentYear = currentDate.getFullYear();
     const endOfMarch = new Date(currentYear, 2, 31); // March 31 of the current year
     const nextEndOfMarch = new Date(currentYear + 1, 2, 31); // March 31 of the next year
@@ -29,6 +29,26 @@ const addLeaves = async (req, res) => {
     const roundToNearestHalf = (value) => {
       return Math.round(value * 2) / 2;
     };
+
+    // Check if any employee's probation end date is today
+    const probationEndDatesToday = employees.filter((employee) => {
+      const probationEndDate = new Date(employee.dateofjoining);
+      probationEndDate.setMonth(probationEndDate.getMonth() + 6);
+      return (
+        probationEndDate.setHours(0, 0, 0, 0) ===
+        currentDate.setHours(0, 0, 0, 0)
+      );
+    });
+
+    if (probationEndDatesToday.length === 0) {
+      console.log("No employees have a probation end date today.");
+      if (res) {
+        return res.status(200).json({
+          success: true,
+          msg: "No employees' probation end date is today. No action required.",
+        });
+      }
+    }
 
     // Process each employee
     await Promise.all(
@@ -124,8 +144,7 @@ const addLeaves = async (req, res) => {
     }
   }
 };
-
-addLeaves();
+// addLeaves();
 // Optionally, uncomment to run this function every year on April 1st
 // setInterval(addLeaves, 365 * 24 * 60 * 60 * 1000); // 365 days in milliseconds
 
@@ -169,7 +188,7 @@ const addHolidays = async (req, res) => {
         // Save the updated leave record
         await leaveRecord.save();
 
-        console.log("Holidays added for all employees");
+        // console.log("Holidays added for all employees");
       })
     );
 
@@ -231,6 +250,11 @@ const viewHolidays = async (req, res) => {
     });
   }
 };
+
+cron.schedule("* * * * *", () => {
+  addLeaves();
+  console.log("Scheduled addLeaves task executed on April 1st at 12:00 AM");
+});
 
 module.exports = {
   addLeaves,
