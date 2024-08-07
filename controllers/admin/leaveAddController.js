@@ -278,13 +278,13 @@ const updateOptionalHolidaysOnJan1st = async () => {
 };
 // addLeaves();
 
-// const jobAddLeaves = new CronJob("0 0 1 * *", () => {
-const jobAddLeaves = new CronJob("*/1 * * * *", () => {
+// const jobAddLeaves = new CronJob("*/1 * * * *", () => {
+const jobAddLeaves = new CronJob("0 0 1 * *", () => {
   addLeaves();
 });
 
-// const jobUpdateOptional = new CronJob("0 0 1 1 *", () => {
-const jobUpdateOptional = new CronJob("*/1 * * * *", () => {
+// const jobUpdateOptional = new CronJob("*/1 * * * *", () => {
+const jobUpdateOptional = new CronJob("0 0 1 1 *", () => {
   updateOptionalHolidaysOnJan1st();
 });
 
