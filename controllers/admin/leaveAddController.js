@@ -276,9 +276,9 @@ const updateOptionalHolidaysOnJan1st = async () => {
     console.error("Error updating optional holidays:", error);
   }
 };
-addLeaves();
+// addLeaves();
 
-const jobAddLeaves = new CronJob("0 0 1 * *", () => {
+const jobAddLeaves = new CronJob("*/1 * * * *", () => {
   addLeaves();
 });
 
