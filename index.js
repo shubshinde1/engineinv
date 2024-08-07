@@ -1,6 +1,7 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_CONNECT);
+require("./controllers/admin/leaveAddController");
 // mongoose.connect("mongodb://localhost:27017/invhrms");
 
 let ejs = require("ejs");

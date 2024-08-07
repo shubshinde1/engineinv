@@ -16,16 +16,27 @@ const leaveBalanceModel = new mongoose.Schema({
       type: Number,
     },
   },
-  optionalholiday: [
-    {
-      name: {
-        type: String,
-      },
-      date: {
-        type: String,
-      },
+  optionalholiday: {
+    total: {
+      type: Number,
     },
-  ],
+    available: {
+      type: Number,
+    },
+    consume: {
+      type: Number,
+    },
+    optionalholidaylist: [
+      {
+        name: {
+          type: String,
+        },
+        date: {
+          type: String,
+        },
+      },
+    ],
+  },
   mandatoryholiday: [
     {
       name: {
@@ -55,25 +66,3 @@ const leaveBalanceModel = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("leavebalance", leaveBalanceModel);
-
-// optionalholiday: {
-//   total: {
-//     type: Number,
-//   },
-//   available: {
-//     type: Number,
-//   },
-//   consume: {
-//     type: Number,
-//   },
-//   optionalholidaylist: [
-//     {
-//       name: {
-//         type: String,
-//       },
-//       date: {
-//         type: String,
-//       },
-//     },
-//   ],
-// },

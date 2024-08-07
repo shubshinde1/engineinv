@@ -144,9 +144,6 @@ const addLeaves = async (req, res) => {
     }
   }
 };
-// addLeaves();
-// Optionally, uncomment to run this function every year on April 1st
-// setInterval(addLeaves, 365 * 24 * 60 * 60 * 1000); // 365 days in milliseconds
 
 const addHolidays = async (req, res) => {
   try {
@@ -172,8 +169,8 @@ const addHolidays = async (req, res) => {
     await Promise.all(
       leaveRecords.map(async (leaveRecord) => {
         // Update the leave record with new holidays
-        leaveRecord.optionalholiday = [
-          ...(leaveRecord.optionalholiday || []),
+        leaveRecord.optionalholiday.optionalholidaylist = [
+          ...(leaveRecord.optionalholiday.optionalholidaylist || []),
           ...optionalholiday,
         ];
         leaveRecord.mandatoryholiday = [
@@ -184,6 +181,10 @@ const addHolidays = async (req, res) => {
           ...(leaveRecord.weekendHoliday || []),
           ...weekendHoliday,
         ];
+
+        // Set optionalholiday total and available to 2
+        // leaveRecord.optionalholiday.total = 2;
+        // leaveRecord.optionalholiday.available = 2;
 
         // Save the updated leave record
         await leaveRecord.save();
@@ -232,7 +233,7 @@ const viewHolidays = async (req, res) => {
     // Create a response structure with the holidays
     const holidays = {
       employee_id: leaveRecord.employee_id,
-      optionalholiday: leaveRecord.optionalholiday,
+      optionalholiday: leaveRecord.optionalholiday.optionalholidaylist,
       mandatoryholiday: leaveRecord.mandatoryholiday,
       weekendHoliday: leaveRecord.weekendHoliday,
     };
@@ -251,9 +252,36 @@ const viewHolidays = async (req, res) => {
   }
 };
 
-// cron.schedule("* * * * *", () => {
-//   addLeaves();
-//   console.log("Scheduled addLeaves task executed on the 1st day of the month.");
+cron.schedule("43 13 7 8 *", addLeaves);
+
+const updateOptionalHolidaysOnJan1st = async () => {
+  try {
+    // Find all leave balance records
+    const leaveRecords = await leavebalance.find();
+
+    // Process each leave record
+    await Promise.all(
+      leaveRecords.map(async (leaveRecord) => {
+        // Set optionalholiday total and available to 2
+        leaveRecord.optionalholiday.total = 2;
+        leaveRecord.optionalholiday.available = 2;
+
+        // Save the updated leave record
+        await leaveRecord.save();
+      })
+    );
+
+    console.log("Optional holidays have been updated for all employees.");
+  } catch (error) {
+    console.error("Error updating optional holidays:", error);
+  }
+};
+
+// updateOptionalHolidaysOnJan1st();
+// Schedule the update to run every year on January 1st at midnight
+// const updateOptionalHolidays = cron.schedule("* * * * *", () => {
+//   updateOptionalHolidaysOnJan1st();
+//   console.log("Scheduled task executed on January 1st.");
 // });
 
 module.exports = {
