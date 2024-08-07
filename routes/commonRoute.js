@@ -24,6 +24,7 @@ const {
   updateUserValidator,
   deleteUserValidator,
   employeeAttendanceValidator,
+  viewLeaveRecordsValidator,
   // ViewAttendanceValidator,
 } = require("../helpers/validation");
 
@@ -31,6 +32,7 @@ const timesheetController = require("../controllers/timesheetController");
 
 const userController = require("../controllers/userController");
 const attendanceController = require("../controllers/attendanceController");
+const leaveController = require("../controllers/leaveController");
 
 // timesheet routes
 router.post(
@@ -110,5 +112,13 @@ router.post(
 router.get("/resetpassword", userController.resetPassword);
 router.post("/resetpassword", userController.updatePassword);
 // router.post("/resetsuccess", userController.resetSuccess);
+
+// view leave records
+router.post(
+  "/viewleaverecords",
+  auth,
+  viewLeaveRecordsValidator,
+  leaveController.getLeaveDetails
+);
 
 module.exports = router;

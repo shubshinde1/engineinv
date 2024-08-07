@@ -99,50 +99,6 @@ const fillTimesheet = async (req, res) => {
   }
 };
 
-// const getTimesheetByDate = async (req, res) => {
-//   try {
-//     const { employee_id, startDate, endDate } = req.body;
-
-//     if (!employee_id || !startDate || !endDate) {
-//       return res.status(400).json({
-//         success: false,
-//         msg: "Missing required request body parameters",
-//       });
-//     }
-
-//     // Fetch timesheet data for the specified date range
-//     const timesheets = await Timesheet.find({
-//       employee_id,
-//       date: { $gte: new Date(startDate), $lte: new Date(endDate) },
-//     }).populate("task.project task.timesheet_id"); // Populate project details
-
-//     // Aggregate tasks by date
-//     const groupedByDate = timesheets.reduce((acc, timesheet) => {
-//       // Ensure date is a Date object
-//       const date = new Date(timesheet.date);
-//       const formattedDate = date.toISOString().split("T")[0];
-
-//       if (!acc[formattedDate]) {
-//         acc[formattedDate] = [];
-//       }
-//       acc[formattedDate] = acc[formattedDate].concat(timesheet.task);
-//       return acc;
-//     }, {});
-
-//     return res.status(200).json({
-//       success: true,
-//       data: groupedByDate,
-//     });
-//   } catch (error) {
-//     console.error("Error fetching timesheet data:", error);
-//     return res.status(500).json({
-//       success: false,
-//       msg: "Failed to fetch timesheet data",
-//       error: error.message,
-//     });
-//   }
-// };
-
 const getTimesheetByDate = async (req, res) => {
   try {
     const { employee_id, startDate, endDate } = req.body;

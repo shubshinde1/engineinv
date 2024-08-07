@@ -55,3 +55,25 @@ const leaveBalanceModel = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("leavebalance", leaveBalanceModel);
+
+// optionalholiday: {
+//   total: {
+//     type: Number,
+//   },
+//   available: {
+//     type: Number,
+//   },
+//   consume: {
+//     type: Number,
+//   },
+//   optionalholidaylist: [
+//     {
+//       name: {
+//         type: String,
+//       },
+//       date: {
+//         type: String,
+//       },
+//     },
+//   ],
+// },
