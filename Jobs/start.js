@@ -4,8 +4,8 @@ const {
 } = require("../controllers/admin/leaveAddController");
 
 const startJobs = () => {
-  jobAddLeaves.start();
-  jobUpdateOptional.start();
+//   jobAddLeaves.start();
+//   jobUpdateOptional.start();
 };
 
 module.exports = startJobs;
