@@ -252,7 +252,7 @@ const viewHolidays = async (req, res) => {
   }
 };
 
-cron.schedule("43 13 7 8 *", addLeaves);
+cron.schedule("46 13 7 8 *", addLeaves);
 
 const updateOptionalHolidaysOnJan1st = async () => {
   try {
