@@ -33,7 +33,7 @@ const addLeaves = async (req, res) => {
     // Check if any employee's probation end date is today
     const probationEndDatesToday = employees.filter((employee) => {
       const probationEndDate = new Date(employee.dateofjoining);
-      probationEndDate.setMonth(probationEndDate.getMonth() + 6);
+      probationEndDate.setMonth(probationEndDate.getMonth() + 1);
       return (
         probationEndDate.setHours(0, 0, 0, 0) ===
         currentDate.setHours(0, 0, 0, 0)
