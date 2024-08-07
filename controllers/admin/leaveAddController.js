@@ -282,11 +282,13 @@ const updateOptionalHolidaysOnJan1st = async () => {
 const jobAddLeaves = new CronJob("0 0 1 * *", () => {
   addLeaves();
 });
+// addLeaves will check by 1st of every month
 
 // const jobUpdateOptional = new CronJob("*/1 * * * *", () => {
 const jobUpdateOptional = new CronJob("0 0 1 1 *", () => {
   updateOptionalHolidaysOnJan1st();
 });
+// updateOptional will check by every years 1st jan
 
 module.exports = {
   addLeaves,
