@@ -1,7 +1,8 @@
 require("dotenv").config();
+const startJobs = require("./Jobs/start");
 const mongoose = require("mongoose");
 mongoose.connect(process.env.DB_CONNECT);
-require("./controllers/admin/leaveAddController");
+
 // mongoose.connect("mongodb://localhost:27017/invhrms");
 
 let ejs = require("ejs");
@@ -48,4 +49,5 @@ app.use("/api", commonRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is works on port http://localhost:${process.env.PORT}`);
+  startJobs();
 });

@@ -1,7 +1,7 @@
 const { validationResult } = require("express-validator");
 const leavebalance = require("../../model/leaveBalanceModel");
 const Employee = require("../../model/employeeModel");
-const cron = require("node-cron");
+const { CronJob } = require("cron");
 
 const EXCLUDE_ID = "6687d8abecc0bcb379e20227"; // Admin _id exclude
 
@@ -233,7 +233,9 @@ const viewHolidays = async (req, res) => {
     // Create a response structure with the holidays
     const holidays = {
       employee_id: leaveRecord.employee_id,
-      optionalholiday: leaveRecord.optionalholiday.optionalholidaylist,
+      optionalholiday:
+        leaveRecord.optionalholiday.optionalholidaylist &&
+        leaveRecord.optionalholiday,
       mandatoryholiday: leaveRecord.mandatoryholiday,
       weekendHoliday: leaveRecord.weekendHoliday,
     };
@@ -251,8 +253,6 @@ const viewHolidays = async (req, res) => {
     });
   }
 };
-
-cron.schedule("10 56 13 7 8 *", addLeaves);
 
 const updateOptionalHolidaysOnJan1st = async () => {
   try {
@@ -276,16 +276,22 @@ const updateOptionalHolidaysOnJan1st = async () => {
     console.error("Error updating optional holidays:", error);
   }
 };
+addLeaves();
 
-// updateOptionalHolidaysOnJan1st();
-// Schedule the update to run every year on January 1st at midnight
-// const updateOptionalHolidays = cron.schedule("* * * * *", () => {
-//   updateOptionalHolidaysOnJan1st();
-//   console.log("Scheduled task executed on January 1st.");
-// });
+const jobAddLeaves = new CronJob("0 0 1 * *", () => {
+  addLeaves();
+});
+
+// const jobUpdateOptional = new CronJob("0 0 1 1 *", () => {
+const jobUpdateOptional = new CronJob("*/1 * * * *", () => {
+  updateOptionalHolidaysOnJan1st();
+});
 
 module.exports = {
   addLeaves,
   addHolidays,
   viewHolidays,
+  updateOptionalHolidaysOnJan1st,
+  jobAddLeaves,
+  jobUpdateOptional,
 };
