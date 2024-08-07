@@ -278,6 +278,7 @@ const updateOptionalHolidaysOnJan1st = async () => {
 };
 // addLeaves();
 
+// const jobAddLeaves = new CronJob("0 0 1 * *", () => {
 const jobAddLeaves = new CronJob("*/1 * * * *", () => {
   addLeaves();
 });
