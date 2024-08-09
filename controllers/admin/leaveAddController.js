@@ -162,6 +162,15 @@ const addHolidays = async (req, res) => {
       });
     }
 
+    console.log(
+      "optioanl",
+      optionalholiday,
+      "mandatory",
+      mandatoryholiday,
+      "weekend",
+      weekendHoliday
+    );
+
     // Find all leave balance records
     const leaveRecords = await leavebalance.find();
 
@@ -277,6 +286,7 @@ const updateOptionalHolidaysOnJan1st = async () => {
   }
 };
 // addLeaves();
+// updateOptionalHolidaysOnJan1st();
 
 // const jobAddLeaves = new CronJob("*/1 * * * *", () => {
 const jobAddLeaves = new CronJob("0 0 1 * *", () => {
