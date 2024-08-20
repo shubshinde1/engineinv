@@ -25,6 +25,7 @@ const {
   deleteUserValidator,
   employeeAttendanceValidator,
   viewLeaveRecordsValidator,
+  leaveApplicationValidator,
   // ViewAttendanceValidator,
 } = require("../helpers/validation");
 
@@ -100,13 +101,13 @@ router.post(
   "/attendance",
   auth,
   employeeAttendanceValidator,
-  attendanceController.employeeAttendance
+  attendanceController.markAttendance
 );
 router.post(
   "/viewattendance",
   auth,
   // ViewAttendanceValidator,
-  attendanceController.viewEmployeeAttendance
+  attendanceController.getAttendance
 );
 
 router.get("/resetpassword", userController.resetPassword);
@@ -119,6 +120,21 @@ router.post(
   auth,
   viewLeaveRecordsValidator,
   leaveController.getLeaveDetails
+);
+
+// leave application
+router.post(
+  "/leaveapplication",
+  auth,
+  leaveApplicationValidator,
+  leaveController.applyLeave
+);
+router.post("/leaveapplicationhistory", auth, leaveController.leavehistory);
+
+router.post(
+  "/getoptionalholidaylist",
+  auth,
+  leaveController.getoptinalholidaylist
 );
 
 module.exports = router;

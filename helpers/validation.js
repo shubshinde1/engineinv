@@ -95,3 +95,9 @@ exports.addHolidayValidator = [];
 exports.viewLeaveRecordsValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
 ];
+
+exports.leaveApplicationValidator = [
+  check("leavetype", "leavetype is required").not().isEmpty(),
+  check("fromdate", "fromdate is required").not().isEmpty(),
+  check("todate", "todate is required").not().isEmpty(),
+];

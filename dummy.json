@@ -1,0 +1,210 @@
+{
+    "_id": {
+        "$oid": "66b5b70a7a223f66c6ced5e6"
+    },
+    "employee_id": {
+        "$oid": "6687d8abecc0bcb379e20227"
+    },
+    "leaves": {
+        "total": {
+            "$numberDouble": "13.5"
+        },
+        "available": {
+            "$numberDouble": "-9.5"
+        },
+        "consume": {
+            "$numberInt": "23"
+        }
+    },
+    "optionalholiday": {
+        "optionalholidaylist": [
+            {
+                "name": "Mahashivratri",
+                "date": "2024-03-08",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d8306"
+                }
+            },
+            {
+                "name": "Good Friday",
+                "date": "2024-03-29",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d8307"
+                }
+            },
+            {
+                "name": "Gudi Padwa",
+                "date": "2024-04-09",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d8308"
+                }
+            },
+            {
+                "name": "Ramzan Id",
+                "date": "2024-04-11",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d8309"
+                }
+            },
+            {
+                "name": "Ram Navami",
+                "date": "2024-04-17",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d830a"
+                }
+            },
+            {
+                "name": "Bakr Id",
+                "date": "2024-06-17",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d830b"
+                }
+            },
+            {
+                "name": "Raksha Bandhan",
+                "date": "2024-08-19",
+                "_id": {
+                    "$oid": "66b5b8f6a33c6b986e0d830c"
+                }
+            },
+            {
+                "name": "Janmashtami",
+                "date": "2024-08-26",
+                "_id": {
+                    "$oid": "66b5b94fa33c6b986e0d838a"
+                }
+            },
+            {
+                "name": "Anant Chaturdashi",
+                "date": "2024-09-17",
+                "_id": {
+                    "$oid": "66b5b94fa33c6b986e0d838b"
+                }
+            },
+            {
+                "name": "Guru Nanak Jayanti",
+                "date": "2024-11-15",
+                "_id": {
+                    "$oid": "66b5b94fa33c6b986e0d838c"
+                }
+            }
+        ],
+        "available": {
+            "$numberInt": "2"
+        },
+        "total": {
+            "$numberInt": "2"
+        }
+    },
+    "mandatoryholiday": [
+        {
+            "name": "New Year",
+            "date": "2024-02-01",
+            "greeting": "Happy New Year",
+            "_id": {
+                "$oid": "66b5b7c8a33c6b986e0d8278"
+            }
+        },
+        {
+            "name": "Republic Day",
+            "date": "2024-01-26",
+            "greeting": "Happy Republic Day",
+            "_id": {
+                "$oid": "66b5b7c8a33c6b986e0d8279"
+            }
+        },
+        {
+            "name": "Holi",
+            "date": "2024-03-25",
+            "greeting": "Happy Holi",
+            "_id": {
+                "$oid": "66b5b7c8a33c6b986e0d827a"
+            }
+        },
+        {
+            "name": "International Labour Day",
+            "date": "2024-05-01",
+            "greeting": "Happy International Labour Day",
+            "_id": {
+                "$oid": "66b5b7c8a33c6b986e0d827b"
+            }
+        },
+        {
+            "name": "Independence Day",
+            "date": "2024-08-15",
+            "greeting": "Happy Independence Day",
+            "_id": {
+                "$oid": "66b5b7c8a33c6b986e0d827c"
+            }
+        },
+        {
+            "name": "Mahatma Gandhi Jayanti",
+            "date": "2024-10-02",
+            "greeting": "Happy Mahatma Gandhi Jayanti",
+            "_id": {
+                "$oid": "66b5b80ea33c6b986e0d82b6"
+            }
+        },
+        {
+            "name": "Diwali",
+            "date": "2024-11-01",
+            "greeting": "Happy Diwali",
+            "_id": {
+                "$oid": "66b5b80ea33c6b986e0d82b7"
+            }
+        },
+        {
+            "name": "Christmas",
+            "date": "2024-12-25",
+            "greeting": "Happy Christmas",
+            "_id": {
+                "$oid": "66b5b80ea33c6b986e0d82b8"
+            }
+        },
+        {
+            "name": "this day",
+            "date": "2024-08-13",
+            "greeting": "this day",
+            "_id": {
+                "$oid": "66bb04cccbf44e56015b76c3"
+            }
+        }
+    ],
+    "weekendHoliday": [
+        {
+            "name": "Mahavir Jayanti",
+            "date": "2024-04-21",
+            "greeting": "Happy Mahavir Jayanti",
+            "_id": {
+                "$oid": "66b5b9b8a33c6b986e0d840c"
+            }
+        },
+        {
+            "name": "Ganesh Chaturthi",
+            "date": "2024-09-07",
+            "greeting": "Happy Ganesh Chaturthi",
+            "_id": {
+                "$oid": "66b5b9b8a33c6b986e0d840d"
+            }
+        },
+        {
+            "name": "Dussehra",
+            "date": "2024-10-12",
+            "greeting": "Happy Dussehra",
+            "_id": {
+                "$oid": "66b5b9b8a33c6b986e0d840e"
+            }
+        },
+        {
+            "name": "Bhai Dooj",
+            "date": "2024-11-03",
+            "greeting": "Happy Bhai Dooj",
+            "_id": {
+                "$oid": "66b5b9b8a33c6b986e0d840f"
+            }
+        }
+    ],
+    "__v": {
+        "$numberInt": "6"
+    }
+}
