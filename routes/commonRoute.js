@@ -26,6 +26,7 @@ const {
   employeeAttendanceValidator,
   viewLeaveRecordsValidator,
   leaveApplicationValidator,
+  deleteLeaveApplicationValidator,
   // ViewAttendanceValidator,
 } = require("../helpers/validation");
 
@@ -129,7 +130,15 @@ router.post(
   leaveApplicationValidator,
   leaveController.applyLeave
 );
+
 router.post("/leaveapplicationhistory", auth, leaveController.leavehistory);
+
+router.post(
+  "/deleteleaveapplication",
+  auth,
+  deleteLeaveApplicationValidator,
+  leaveController.deleteApplication
+);
 
 router.post(
   "/getoptionalholidaylist",

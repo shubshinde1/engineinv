@@ -247,6 +247,55 @@ const applyLeave = async (req, res) => {
   }
 };
 
+const deleteApplication = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array().map((err) => err.msg),
+      });
+    }
+
+    const { applicationId } = req.body;
+
+    // Find the leave application by ID
+    const application = await LeaveApplication.findById(applicationId);
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        msg: "Leave application not found.",
+      });
+    }
+
+    // Check if the leave is pending
+    if (application.applicationstatus !== 0) {
+      return res.status(403).json({
+        success: false,
+        msg: "You can only delete pending leave applications.",
+      });
+    }
+
+    // Delete the pending leave application
+    await LeaveApplication.findByIdAndDelete(applicationId);
+
+    res.status(200).json({
+      success: true,
+      msg: "Leave application deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error while deleting leavehistory:", error);
+    res.status(500).json({
+      success: false,
+      msg: "delation error",
+      error: error.message,
+    });
+  }
+};
+
 const leavehistory = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -282,6 +331,7 @@ const leavehistory = async (req, res) => {
 
     // Structure the response with all leave history
     const leavehistory = leaveHistory.map((record) => ({
+      _id: record._id,
       employee_id: record.employee_id,
       fromdate: record.fromdate,
       todate: record.todate,
@@ -360,4 +410,5 @@ module.exports = {
   applyLeave,
   leavehistory,
   getoptinalholidaylist,
+  deleteApplication,
 };

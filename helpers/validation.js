@@ -101,3 +101,8 @@ exports.leaveApplicationValidator = [
   check("fromdate", "fromdate is required").not().isEmpty(),
   check("todate", "todate is required").not().isEmpty(),
 ];
+
+exports.deleteLeaveApplicationValidator = [
+  check("employee_id", "employee_id is required").not().isEmpty(),
+  check("applicationId", "applicationId is required").not().isEmpty(),
+];
