@@ -38,7 +38,7 @@ const attendanceSchema = new mongoose.Schema(
       default: { latitude: 0, longitude: 0 }, // Default values can be adjusted
     },
     totalhrs: {
-      type: String, // this hrs will fill when emp send mark = "Out" (intime and outtime's addition)
+      type: Number, // this hrs will fill when emp send mark = "Out" (intime and outtime's addition)
     },
     attendancestatus: {
       type: Number,
@@ -51,8 +51,8 @@ const attendanceSchema = new mongoose.Schema(
 // Middleware to calculate totalhrs and attendancestatus
 attendanceSchema.pre("save", function (next) {
   if (this.mark === "Out" && this.intime && this.outtime) {
-    this.totalhrs = (this.outtime - this.intime) / (1000 * 60 * 60); // convert ms to hours
-    this.attendancestatus = this.totalhrs >= 4 ? 1 : 2;
+    this.totalhrs = this.outtime - this.intime; // store total time in milliseconds
+    this.attendancestatus = this.totalhrs >= 4 * 60 * 60 * 1000 ? 1 : 2;
   }
   next();
 });

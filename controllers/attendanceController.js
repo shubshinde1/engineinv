@@ -2,12 +2,22 @@ const Attendance = require("../model/attendaceModel"); // Adjust the path if nee
 const LeaveApplication = require("../model/leaveApplicationModel"); // Adjust the path if needed
 const Employee = require("../model/employeeModel");
 const LeaveBalance = require("../model/leaveBalanceModel");
+const { validationResult } = require("express-validator");
 
 const { CronJob } = require("cron");
 
 // Function to mark attendance
 const markAttendance = async (req, res) => {
   try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array().map((err) => err.msg),
+      });
+    }
     const { employee_id, mark, inlocation, outlocation } = req.body;
 
     // Validate location data format
@@ -73,18 +83,10 @@ const markAttendance = async (req, res) => {
           const totalMs = outtimeDate - intimeDate;
 
           if (!isNaN(totalMs)) {
-            const totalHours = Math.floor(totalMs / (1000 * 60 * 60)); // Extract hours
-            const totalMinutes = Math.floor(
-              (totalMs % (1000 * 60 * 60)) / (1000 * 60)
-            ); // Extract minutes
-
-            // Format as "hr:mm"
-            attendance.totalhrs = `${totalHours}:${
-              totalMinutes < 10 ? "0" : ""
-            }${totalMinutes}`;
-            attendance.attendancestatus = totalHours >= 4 ? 1 : 2; // 1 = present full day, 2 = half day
+            attendance.totalhrs = totalMs; // Store total time in milliseconds
+            attendance.attendancestatus = totalMs >= 4 * 60 * 60 * 1000 ? 1 : 2; // 1 = present full day, 2 = half day
           } else {
-            attendance.totalhrs = "0:00";
+            attendance.totalhrs = 0;
             attendance.attendancestatus = 0; // Default to absent
           }
         }
