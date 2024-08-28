@@ -101,7 +101,7 @@ const markAttendance = async (req, res) => {
         if (attendance.mark === "Out") {
           return res
             .status(400)
-            .json({ message: "You cannot punch in again for today." });
+            .json({ message: "You cannot punch in twice in a day." });
         }
         attendance.intime = currentTime;
         attendance.inlocation = inlocation;
