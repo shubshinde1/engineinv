@@ -28,6 +28,8 @@ const {
   leaveApplicationValidator,
   deleteLeaveApplicationValidator,
   // ViewAttendanceValidator,
+  uploadProfilePicValidator,
+  viewProfilePicValidator,
 } = require("../helpers/validation");
 
 const timesheetController = require("../controllers/timesheetController");
@@ -35,6 +37,13 @@ const timesheetController = require("../controllers/timesheetController");
 const userController = require("../controllers/userController");
 const attendanceController = require("../controllers/attendanceController");
 const leaveController = require("../controllers/leaveController");
+// const multer = require("multer");
+
+const multer = require("multer");
+var uploader = multer({
+  storage: multer.diskStorage({}),
+  limits: { fileSize: 500000 },
+});
 
 // timesheet routes
 router.post(
@@ -144,6 +153,31 @@ router.post(
   "/getoptionalholidaylist",
   auth,
   leaveController.getoptinalholidaylist
+);
+
+router.post(
+  "/uploadprofile",
+  auth,
+  // uploadProfilePicValidator,
+  uploader.single("file"),
+  userController.uploadFile
+);
+
+router.post("/deleteprofile", auth, userController.deleteProfile);
+
+router.post(
+  "/updateprofile",
+  auth,
+  // uploadProfilePicValidator,
+  uploader.single("file"),
+  userController.updateProfile
+);
+
+router.post(
+  "/viewprofile",
+  auth,
+  // viewProfilePicValidator,
+  userController.viewProfilePic
 );
 
 module.exports = router;

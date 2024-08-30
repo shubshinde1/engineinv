@@ -1,6 +1,9 @@
 const { validationResult } = require("express-validator");
-
 const Employee = require("../model/employeeModel");
+
+const Upload = require("../helpers/upload");
+const Employeeprofile = require("../model/employeeProfile");
+
 const PasswordReset = require("../model/passwordReset");
 
 const bcrypt = require("bcrypt");
@@ -402,6 +405,202 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// http://localhost:3000/api/uploadprofile
+const uploadFile = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array(),
+      });
+    }
+    const { Employee_id } = req.body;
+
+    const isExist = await Employee.findOne({ _id: Employee_id });
+
+    if (!isExist) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not found",
+      });
+    }
+
+    const existingprofile = await Employeeprofile.findOne({
+      employee_id: Employee_id,
+    });
+
+    if (existingprofile) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee already have profile",
+      });
+    }
+
+    const upload = await Upload.uploadFile(req.file.path);
+
+    var employeeprofile = new Employeeprofile({
+      profileUrl: upload.secure_url,
+      employee_id: Employee_id,
+    });
+    var record = await employeeprofile.save();
+    return res.status(200).json({
+      success: true,
+      msg: "File Uploded",
+      data: record,
+    });
+    // res.send({ success: true, msg: "File Uploded", data: record });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+// http://localhost:3000/api/deleteprofile
+const deleteProfile = async (req, res) => {
+  try {
+    const { Employee_id } = req.body;
+
+    // Check if the employee exists
+    const isExist = await Employee.findOne({ _id: Employee_id });
+
+    if (!isExist) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not found",
+      });
+    }
+
+    // Check if the profile exists
+    const existingprofile = await Employeeprofile.findOne({
+      employee_id: Employee_id,
+    });
+
+    if (!existingprofile) {
+      return res.status(400).json({
+        success: false,
+        msg: "Profile not found to delete",
+      });
+    }
+
+    // Delete the profile
+    await Employeeprofile.deleteOne({ employee_id: Employee_id });
+
+    return res.status(200).json({
+      success: true,
+      msg: "Profile deleted successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+// http://localhost:3000/api/updateprofile
+const updateProfile = async (req, res) => {
+  try {
+    const { Employee_id } = req.body;
+
+    // Check if the employee exists
+    const isExist = await Employee.findOne({ _id: Employee_id });
+
+    if (!isExist) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not found",
+      });
+    }
+
+    // Check if the profile exists
+    const existingprofile = await Employeeprofile.findOne({
+      employee_id: Employee_id,
+    });
+
+    if (!existingprofile) {
+      return res.status(400).json({
+        success: false,
+        msg: "Delete old profile",
+      });
+    }
+
+    // Upload new file
+    const upload = await Upload.uploadFile(req.file.path);
+
+    // Update the profile with the new URL
+    existingprofile.profileUrl = upload.secure_url;
+
+    // Save the updated profile
+    var updatedRecord = await existingprofile.save();
+
+    return res.status(200).json({
+      success: true,
+      msg: "Profile updated successfully",
+      data: updatedRecord,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
+// http://localhost:3000/api/viewprofile
+const viewProfilePic = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array(),
+      });
+    }
+
+    const { Employee_id } = req.body;
+
+    const isExist = await Employeeprofile.findOne({ employee_id: Employee_id });
+
+    // if (!isExist) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     msg: "Employee not found",
+    //   });
+    // }
+
+    // Check if the profile exists
+    const existingprofile = await Employeeprofile.findOne({
+      employee_id: Employee_id,
+    });
+
+    if (!existingprofile) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee profile not found",
+      });
+    }
+
+    // Return the profile data
+    return res.status(200).json({
+      success: true,
+      msg: "Profile retrieved successfully",
+      data: existingprofile,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
 module.exports = {
   createUser,
   forgotPassword,
@@ -411,4 +610,8 @@ module.exports = {
   resetPassword,
   // resetSuccess,
   updatePassword,
+  uploadFile,
+  deleteProfile,
+  updateProfile,
+  viewProfilePic,
 };

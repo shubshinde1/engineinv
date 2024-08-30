@@ -103,6 +103,14 @@ exports.leaveApplicationValidator = [
 ];
 
 exports.deleteLeaveApplicationValidator = [
-  check("employee_id", "employee_id is required").not().isEmpty(),
+  check("Employee_id", "Employee_id is required").not().isEmpty(),
   check("applicationId", "applicationId is required").not().isEmpty(),
+];
+
+exports.uploadProfilePicValidator = [
+  check("Employee_id", "Employee_id is required").not().isEmpty(),
+];
+
+exports.viewProfilePicValidator = [
+  check("Employee_id", "Employee_id is required").not().isEmpty(),
 ];
