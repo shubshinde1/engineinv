@@ -6,8 +6,8 @@ const {
 
 const startJobs = () => {
   attendaceCheck.start();
-    jobAddLeaves.start();
-    jobUpdateOptional.start();
+  jobAddLeaves.start();
+  jobUpdateOptional.start();
 };
 
 module.exports = startJobs;

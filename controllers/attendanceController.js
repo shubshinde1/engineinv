@@ -258,7 +258,7 @@ const checkAttendance = async () => {
       }
     }
 
-    console.log("Attendance check completed at 11:57 AM.");
+    console.log("Attendance check completed at 12:59 AM.");
   } catch (error) {
     console.error("Error in attendance check:", error);
   }

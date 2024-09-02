@@ -8,6 +8,7 @@ const roleController = require("../controllers/admin/roleController");
 const clientController = require("../controllers/admin/clientController");
 const projectController = require("../controllers/admin/projectController");
 const leaveAddController = require("../controllers/admin/leaveAddController");
+const userController = require("../controllers/userController");
 
 const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 
@@ -140,5 +141,7 @@ router.post(
   onlyAdminAccess,
   leaveAddController.viewHolidays
 );
+
+router.get("/viewusers", auth, onlyAdminAccess, userController.viewUser);
 
 module.exports = router;

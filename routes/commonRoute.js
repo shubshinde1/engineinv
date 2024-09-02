@@ -91,7 +91,7 @@ router.post(
   validate,
   userController.createUser
 );
-router.get("/viewusers", auth, userController.viewUser);
+
 router.post(
   "/updateuser",
   auth,
