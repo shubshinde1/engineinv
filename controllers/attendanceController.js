@@ -129,6 +129,7 @@ const markAttendance = async (req, res) => {
         inlocation: mark === "In" ? inlocation : undefined,
         outtime: mark === "Out" ? currentTime : undefined,
         outlocation: mark === "Out" ? outlocation : undefined,
+        attendancestatus: 1,
       });
 
       await attendance.save();
@@ -258,13 +259,13 @@ const checkAttendance = async () => {
       }
     }
 
-    console.log("Attendance check completed at 12:59 AM.");
+    console.log("Attendance check completed at 02:59 AM.");
   } catch (error) {
     console.error("Error in attendance check:", error);
   }
 };
 // checkAttendance();
-const attendaceCheck = new CronJob("59 12 * * *", checkAttendance);
+const attendaceCheck = new CronJob("59 14 * * *", checkAttendance);
 
 module.exports = {
   markAttendance,

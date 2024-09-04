@@ -230,6 +230,41 @@ const viewUser = async (req, res) => {
   }
 };
 
+const employeedetails = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array(),
+      });
+    }
+    const { _id } = req.body;
+
+    const empdetails = await Employee.findOne({ _id });
+    if (!empdetails) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not Exist",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      msg: "Employee details fetch successfully",
+      data: empdetails,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: "Unable to fetch Employee details",
+      data: empdetails,
+    });
+  }
+};
+
 const updateUser = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -614,4 +649,5 @@ module.exports = {
   deleteProfile,
   updateProfile,
   viewProfilePic,
+  employeedetails,
 };

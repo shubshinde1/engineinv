@@ -162,6 +162,7 @@ const deleteEmployee = async (req, res) => {
     });
   }
 };
+
 const employeedetails = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -281,10 +282,129 @@ const employeedetails = async (req, res) => {
   }
 };
 
+const updateemployeebyadmin = async (req, res) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        success: false,
+        msg: "Validation errors",
+        errors: errors.array(),
+      });
+    }
+
+    const {
+      _id,
+      name,
+      email,
+      password,
+      phone,
+      status,
+      dob,
+      gender,
+      maritialstatus,
+      bloodgroup,
+      dateofjoining,
+      designation,
+      department,
+      reportingto,
+      teamleader,
+      techexperties,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      emergencypersonname,
+      relation,
+      profession,
+      emergencypersonaddress,
+      emergencypersonemail,
+      emergencypersonphone,
+      workexperience,
+    } = req.body;
+
+    const isExist = await Employee.findOne({ _id: _id });
+
+    if (!isExist) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee not Exist",
+      });
+    }
+
+    var updateObj = {
+      name,
+      email,
+      password,
+      phone,
+      status,
+      _id,
+      name,
+      password,
+      phone,
+      status,
+      dob,
+      gender,
+      maritialstatus,
+      bloodgroup,
+      dateofjoining,
+      designation,
+      department,
+      reportingto,
+      teamleader,
+      techexperties,
+      address,
+      city,
+      state,
+      country,
+      zipcode,
+      emergencypersonname,
+      relation,
+      profession,
+      emergencypersonaddress,
+      emergencypersonemail,
+      emergencypersonphone,
+      workexperience,
+    };
+
+    const newPassword = req.body.password;
+    if (newPassword) {
+      const hashPassword = await bcrypt.hash(newPassword, 10);
+      updateObj.password = hashPassword;
+    }
+
+    if (req.body.status != updateObj.status) {
+      updateObj.status = req.body.status;
+    }
+
+    const updatedEmployeeData = await Employee.findByIdAndUpdate(
+      { _id: _id },
+      {
+        $set: updateObj,
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "Employee Details Updated successfully",
+      data: updatedEmployeeData,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
 module.exports = {
   registerEmployee,
   loginEmployee,
   getProfile,
   deleteEmployee,
   employeedetails,
+  updateemployeebyadmin,
 };
