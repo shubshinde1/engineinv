@@ -167,6 +167,20 @@ const endOfDayProcessing = async () => {
   }
 };
 
+const getAllAttendanceRecords = async (req, res) => {
+  try {
+    const attendance = await Attendance.find({
+      _id: {
+        $ne: req.employee._id,
+      },
+    });
+
+    return res.status(200).json({ attendance });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 // Function to get attendance for an employee
 const getAttendance = async (req, res) => {
   try {
@@ -272,4 +286,5 @@ module.exports = {
   endOfDayProcessing,
   getAttendance,
   attendaceCheck,
+  getAllAttendanceRecords,
 };

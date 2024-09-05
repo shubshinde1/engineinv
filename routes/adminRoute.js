@@ -10,6 +10,7 @@ const projectController = require("../controllers/admin/projectController");
 const leaveAddController = require("../controllers/admin/leaveAddController");
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
+const attendanceController = require("../controllers/attendanceController");
 
 const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 
@@ -157,6 +158,13 @@ router.post(
   auth,
   onlyAdminAccess,
   authController.updateemployeebyadmin
+);
+
+router.get(
+  "/getallattendancerecords",
+  auth,
+  onlyAdminAccess,
+  attendanceController.getAllAttendanceRecords
 );
 
 module.exports = router;
