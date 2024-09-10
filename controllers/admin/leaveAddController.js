@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const leavebalance = require("../../model/leaveBalanceModel");
+const leaveapplication = require("../../model/leaveApplicationModel");
 const Employee = require("../../model/employeeModel");
 const { CronJob } = require("cron");
 
@@ -285,6 +286,167 @@ const updateOptionalHolidaysOnJan1st = async () => {
     console.error("Error updating optional holidays:", error);
   }
 };
+
+const updateLeaveBalanceForNewEmployee = async (req, res) => {
+  try {
+    const Admin_id = "6687d8abecc0bcb379e20227";
+    const rawData = await leavebalance.findOne({ employee_id: Admin_id });
+
+    const { employee_id } = req.body;
+
+    // Validate that Employee_id is provided
+    if (!employee_id) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee ID is required",
+      });
+    }
+
+    const leaveRecord = await leavebalance.findOne({ employee_id });
+
+    if (!leaveRecord) {
+      return res.status(404).json({
+        success: false,
+        msg: "Leave record not found",
+      });
+    }
+
+    // Clone specific fields from rawData to leaveRecord
+    leaveRecord.optionalholiday.optionalholidaylist = [
+      ...rawData.optionalholiday.optionalholidaylist,
+    ];
+    leaveRecord.mandatoryholiday = [...rawData.mandatoryholiday];
+    leaveRecord.weekendHoliday = [...rawData.weekendHoliday];
+
+    // Optionally save if you need to persist the changes in the database
+    await leaveRecord.save();
+
+    return res.status(200).json({
+      success: true,
+      data: leaveRecord, // Return the updated leaveRecord
+    });
+  } catch (error) {
+    console.error("Error updating leave balance:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Server error",
+    });
+  }
+};
+
+const approveLeave = async (req, res) => {
+  try {
+    const { employee_id, application_id, applicationstatus } = req.body;
+
+    // Check if employee exists
+    const isEmployee = await leaveapplication.findOne({ employee_id });
+    if (!isEmployee) {
+      return res.status(400).json({
+        success: false,
+        msg: "No employee found",
+      });
+    }
+
+    // Find the current application record
+    const application = await leaveapplication.findOne({ _id: application_id });
+    if (!application) {
+      return res.status(400).json({
+        success: false,
+        msg: "No leave records found",
+      });
+    }
+
+    // Get the current application status
+    const currentStatus = application.applicationstatus;
+
+    // Update the application status
+    const newRecord = await leaveapplication.findByIdAndUpdate(
+      { _id: application_id },
+      { applicationstatus },
+      { new: true }
+    );
+
+    if (newRecord) {
+      const daysofleaveapplication = application.totaldays;
+      const leaveType = application.leavetype;
+
+      // Find employee leave balance
+      const findemployeetominus = await leavebalance.findOne({
+        employee_id,
+      });
+
+      // Condition 1: If applicationstatus was 1 and stays 1
+      if (currentStatus === 1 && applicationstatus === 1) {
+        if (leaveType === "leave") {
+          if (
+            findemployeetominus.leaves.available - daysofleaveapplication >=
+            0
+          ) {
+            findemployeetominus.leaves.available -= daysofleaveapplication;
+            findemployeetominus.leaves.consume += daysofleaveapplication;
+          } else {
+            return res.status(400).json({
+              success: false,
+              msg: "Not enough available leaves",
+            });
+          }
+        } else if (leaveType === "Optional holiday") {
+          if (
+            findemployeetominus.optionalholiday.available -
+              daysofleaveapplication >=
+            0
+          ) {
+            findemployeetominus.optionalholiday.available -=
+              daysofleaveapplication;
+          } else {
+            return res.status(400).json({
+              success: false,
+              msg: "Not enough available optional holidays",
+            });
+          }
+        }
+      }
+
+      // Condition 2: If applicationstatus was 1 and is now 0 (reverse the balances)
+      if (currentStatus === 1 && applicationstatus === 0) {
+        if (leaveType === "leave") {
+          findemployeetominus.leaves.available += daysofleaveapplication;
+          findemployeetominus.leaves.consume -= daysofleaveapplication;
+        } else if (leaveType === "Optional holiday") {
+          findemployeetominus.optionalholiday.available +=
+            daysofleaveapplication;
+        }
+      }
+
+      // Save the updated leave balance if changes were made
+      if (
+        currentStatus === 1 &&
+        (applicationstatus === 1 || applicationstatus === 0)
+      ) {
+        await findemployeetominus.save();
+      }
+
+      // Condition 3: If applicationstatus is 2, no need to change leave balances, just update status
+      if (applicationstatus === 2) {
+        return res.status(200).json({
+          success: true,
+          msg: "Leave status updated to 2",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: newRecord,
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      msg: error.message,
+    });
+  }
+};
+
 // addLeaves();
 // updateOptionalHolidaysOnJan1st();
 
@@ -307,4 +469,6 @@ module.exports = {
   updateOptionalHolidaysOnJan1st,
   jobAddLeaves,
   jobUpdateOptional,
+  updateLeaveBalanceForNewEmployee,
+  approveLeave,
 };

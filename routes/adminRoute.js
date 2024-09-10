@@ -23,6 +23,7 @@ const {
   updateClientValidator,
   addProjectValidator,
   updateProjectValidator,
+  deleteUserValidator,
 } = require("../helpers/adminValidator");
 
 const {
@@ -137,11 +138,25 @@ router.post(
   addHolidayValidator,
   leaveAddController.addHolidays
 );
+
+router.post(
+  "/updateleavebalancefornewemployee",
+  auth,
+  onlyAdminAccess,
+  leaveAddController.updateLeaveBalanceForNewEmployee
+);
+
 router.post(
   "/viewholidays",
   auth,
   onlyAdminAccess,
   leaveAddController.viewHolidays
+);
+router.post(
+  "/approveLeave",
+  auth,
+  onlyAdminAccess,
+  leaveAddController.approveLeave
 );
 
 router.get("/viewusers", auth, onlyAdminAccess, userController.viewUser);
@@ -158,6 +173,14 @@ router.post(
   auth,
   onlyAdminAccess,
   authController.updateemployeebyadmin
+);
+
+router.post(
+  "/deleteuser",
+  auth,
+  onlyAdminAccess,
+  deleteUserValidator,
+  userController.deleteUser
 );
 
 router.get(

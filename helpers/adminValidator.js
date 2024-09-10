@@ -119,3 +119,5 @@ exports.updateProjectValidator = [
   check("id", "Id is required to update project details").not().isEmpty(),
   check("projectname", "projectname is required").not().isEmpty(),
 ];
+
+exports.deleteUserValidator = [check("id", "id is required").not().isEmpty()];
