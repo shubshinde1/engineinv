@@ -438,12 +438,13 @@ const approveLeave = async (req, res) => {
     }
 
     // If currentStatus is 0 and applicationstatus is 2, only update status (no balance changes)
-    if (currentStatus === 0 && applicationstatus === 2) {
-      return res.status(200).json({
-        success: true,
-        msg: "Leave status updated to 2",
-      });
-    }
+    // if (currentStatus === 0 && applicationstatus === 2) {
+    //   await findemployeetominus.save();
+    //   return res.status(200).json({
+    //     success: true,
+    //     msg: "Leave status updated to 2",
+    //   });
+    // }
 
     // Update the application status (only after all checks have passed)
     const newRecord = await leaveapplication.findByIdAndUpdate(
