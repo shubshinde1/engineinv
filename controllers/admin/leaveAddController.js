@@ -359,86 +359,112 @@ const approveLeave = async (req, res) => {
     // Get the current application status
     const currentStatus = application.applicationstatus;
 
-    // Update the application status
+    // Check if currentStatus is the same as the new applicationstatus
+
+    const statusMessages = {
+      0: "Awaiting",
+      1: "Approved",
+      2: "Declined",
+    };
+    if (currentStatus === applicationstatus) {
+      const message = statusMessages[applicationstatus] || "Unknown Status";
+
+      return res.status(400).json({
+        success: false,
+        msg: `Application is already in ${message} state`,
+      });
+    }
+
+    const daysofleaveapplication = application.totaldays;
+    const leaveType = application.leavetype;
+
+    // Find employee leave balance
+    const findemployeetominus = await leavebalance.findOne({
+      employee_id,
+    });
+
+    // Condition 1: If applicationstatus is changing to 1 (deduct leave balance)
+    if (applicationstatus === 1) {
+      if (leaveType === "leave") {
+        if (
+          findemployeetominus.leaves.available - daysofleaveapplication >=
+          0
+        ) {
+          findemployeetominus.leaves.available -= daysofleaveapplication;
+          findemployeetominus.leaves.consume += daysofleaveapplication;
+        } else {
+          return res.status(400).json({
+            success: false,
+            msg: "Not enough available leaves",
+          });
+        }
+      } else if (leaveType === "Optional holiday") {
+        if (
+          findemployeetominus.optionalholiday.available -
+            daysofleaveapplication >=
+          0
+        ) {
+          findemployeetominus.optionalholiday.available -=
+            daysofleaveapplication;
+        } else {
+          return res.status(400).json({
+            success: false,
+            msg: "Not enough available optional holidays",
+          });
+        }
+      }
+    }
+
+    // Condition 2: If applicationstatus was 1 and is now 0 (reverse the balances)
+    if (currentStatus === 1 && applicationstatus === 0) {
+      if (leaveType === "leave") {
+        findemployeetominus.leaves.available += daysofleaveapplication;
+        findemployeetominus.leaves.consume -= daysofleaveapplication;
+      } else if (leaveType === "Optional holiday") {
+        findemployeetominus.optionalholiday.available += daysofleaveapplication;
+      }
+    }
+
+    // New Condition 3: If currentStatus is 1 and applicationstatus is 2 (reverse the balances like Condition 2)
+    if (currentStatus === 1 && applicationstatus === 2) {
+      if (leaveType === "leave") {
+        findemployeetominus.leaves.available += daysofleaveapplication;
+        findemployeetominus.leaves.consume -= daysofleaveapplication;
+      } else if (leaveType === "Optional holiday") {
+        findemployeetominus.optionalholiday.available += daysofleaveapplication;
+      }
+      // Save the updated leave balance after reversing
+      await findemployeetominus.save();
+    }
+
+    // If currentStatus is 0 and applicationstatus is 2, only update status (no balance changes)
+    if (currentStatus === 0 && applicationstatus === 2) {
+      return res.status(200).json({
+        success: true,
+        msg: "Leave status updated to 2",
+      });
+    }
+
+    // Update the application status (only after all checks have passed)
     const newRecord = await leaveapplication.findByIdAndUpdate(
       { _id: application_id },
       { applicationstatus },
       { new: true }
     );
 
-    if (newRecord) {
-      const daysofleaveapplication = application.totaldays;
-      const leaveType = application.leavetype;
-
-      // Find employee leave balance
-      const findemployeetominus = await leavebalance.findOne({
-        employee_id,
-      });
-
-      // Condition 1: If applicationstatus was 1 and stays 1
-      if (currentStatus === 1 && applicationstatus === 1) {
-        if (leaveType === "leave") {
-          if (
-            findemployeetominus.leaves.available - daysofleaveapplication >=
-            0
-          ) {
-            findemployeetominus.leaves.available -= daysofleaveapplication;
-            findemployeetominus.leaves.consume += daysofleaveapplication;
-          } else {
-            return res.status(400).json({
-              success: false,
-              msg: "Not enough available leaves",
-            });
-          }
-        } else if (leaveType === "Optional holiday") {
-          if (
-            findemployeetominus.optionalholiday.available -
-              daysofleaveapplication >=
-            0
-          ) {
-            findemployeetominus.optionalholiday.available -=
-              daysofleaveapplication;
-          } else {
-            return res.status(400).json({
-              success: false,
-              msg: "Not enough available optional holidays",
-            });
-          }
-        }
-      }
-
-      // Condition 2: If applicationstatus was 1 and is now 0 (reverse the balances)
-      if (currentStatus === 1 && applicationstatus === 0) {
-        if (leaveType === "leave") {
-          findemployeetominus.leaves.available += daysofleaveapplication;
-          findemployeetominus.leaves.consume -= daysofleaveapplication;
-        } else if (leaveType === "Optional holiday") {
-          findemployeetominus.optionalholiday.available +=
-            daysofleaveapplication;
-        }
-      }
-
-      // Save the updated leave balance if changes were made
-      if (
-        currentStatus === 1 &&
-        (applicationstatus === 1 || applicationstatus === 0)
-      ) {
-        await findemployeetominus.save();
-      }
-
-      // Condition 3: If applicationstatus is 2, no need to change leave balances, just update status
-      if (applicationstatus === 2) {
-        return res.status(200).json({
-          success: true,
-          msg: "Leave status updated to 2",
-        });
-      }
-
-      return res.status(200).json({
-        success: true,
-        data: newRecord,
-      });
+    // Save the updated leave balance if changes were made
+    if (
+      (currentStatus === 1 && applicationstatus === 0) ||
+      applicationstatus === 1 ||
+      (currentStatus === 1 && applicationstatus === 2)
+    ) {
+      await findemployeetominus.save();
     }
+
+    return res.status(200).json({
+      success: true,
+      data: newRecord,
+    });
   } catch (error) {
     return res.status(400).json({
       success: false,
@@ -446,6 +472,11 @@ const approveLeave = async (req, res) => {
     });
   }
 };
+
+// Condition 1: If applicationstatus is changing to 1 (deduct leave balance)
+// Condition 2: If applicationstatus was 1 and is now 0 (reverse the balances)
+// Condition 3: If currentStatus is 1 and applicationstatus is 2 (reverse the balances like Condition 2)
+// If currentStatus is 0 and applicationstatus is 2, only update the status without changing balances
 
 // addLeaves();
 // updateOptionalHolidaysOnJan1st();
