@@ -322,12 +322,12 @@ const leavehistory = async (req, res) => {
     const leaveHistory = await LeaveApplication.find({ employee_id });
 
     // Check if history were found
-    if (!leaveHistory.length) {
-      return res.status(404).json({
-        success: false,
-        msg: `No leave history found for employee_id: ${employee_id}`,
-      });
-    }
+    // if (!leaveHistory.length) {
+    //   return res.status(404).json({
+    //     success: false,
+    //     msg: `No leave history found for employee_id: ${employee_id}`,
+    //   });
+    // }
 
     // Structure the response with all leave history
     const leavehistory = leaveHistory.map((record) => ({
