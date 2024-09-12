@@ -356,6 +356,22 @@ const approveLeave = async (req, res) => {
       });
     }
 
+    // Check for today's or older dates
+    const applnDate = new Date(application.fromdate); // Convert fromdate to a Date object
+    const currentDate = new Date();
+
+    // Set both dates to ignore the time portion, comparing only the dates
+    const applnDateOnly = applnDate.setHours(0, 0, 0, 0);
+    const currentDateOnly = currentDate.setHours(0, 0, 0, 0);
+
+    // If applnDate is today or before, block the change
+    if (applnDateOnly <= currentDateOnly) {
+      return res.status(400).json({
+        success: false,
+        msg: "You can't change old application status",
+      });
+    }
+
     // Get the current application status
     const currentStatus = application.applicationstatus;
 
@@ -395,7 +411,7 @@ const approveLeave = async (req, res) => {
         } else {
           return res.status(400).json({
             success: false,
-            msg: "Not enough available leaves",
+            msg: "Not enough leave balance.",
           });
         }
       } else if (leaveType === "Optional holiday") {
