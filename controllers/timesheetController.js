@@ -151,6 +151,54 @@ const getTimesheetByDate = async (req, res) => {
   }
 };
 
+const getYearlyDurations = async (req, res) => {
+  try {
+    const { employee_id, year } = req.body;
+
+    if (!employee_id || !year) {
+      return res.status(400).json({
+        success: false,
+        msg: "Missing required request body parameters",
+      });
+    }
+
+    const timesheetData = await Timesheet.find({ employee_id });
+
+    // Filter timesheets to include only those within the specified year
+    const filteredData = timesheetData.filter((item) => {
+      const itemYear = new Date(item.date).getFullYear();
+      return itemYear === parseInt(year, 10);
+    });
+
+    // Filter further to only include dates with tasks
+    const validData = filteredData.filter((entry) => entry.task.length > 0);
+
+    // Map through each valid date, calculate total duration, and format the result
+    const result = validData.map((entry) => {
+      const totalDuration = entry.task.reduce(
+        (acc, task) => acc + task.duration,
+        0
+      );
+      return {
+        date: entry.date,
+        totalDuration,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Error fetching yearly durations:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to fetch yearly durations",
+      error: error.message,
+    });
+  }
+};
+
 const getTimesheetdays = async (req, res) => {
   const { employee_id } = req.body;
 
@@ -480,4 +528,5 @@ module.exports = {
   updateTimesheet,
   getProjectDetails,
   getTimesheetdays,
+  getYearlyDurations,
 };
