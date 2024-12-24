@@ -25,7 +25,7 @@ exports.forgotPasswordValidator = [
 exports.createUserValidator = [
   check("name", "Name is required").not().isEmpty(),
   check("phone", "Phone is required").not().isEmpty(),
-  check("password", "password is required").not().isEmpty(),
+  // check("password", "password is required").not().isEmpty(),
   check("email", "Email is required")
     .isEmail()
     .normalizeEmail({

@@ -34,9 +34,9 @@ const createUser = async (req, res) => {
       });
     }
 
-    // const rowpassword = randomstring.generate(10);
+    const rowpassword = randomstring.generate(10);
     // const rowpassword = "Tomhardy@12";
-    const hashPassword = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(rowpassword, 10);
 
     var obj = {
       name,
@@ -63,8 +63,8 @@ const createUser = async (req, res) => {
     <p>Employee id - ${EmployeeData.empid}</br>
     User Name - ${EmployeeData.name}</br>
     Email - ${EmployeeData.email}</br>
-    Password - ${password}</p>
-    <p style="color:red">Note:Please never shaer your password with anyone</p>
+    Password - ${rowpassword}</p>
+    <p style="color:red">Note: Change you password after 1st login, Please never shaer your password with anyone. </p>
     <span>Best Regards,</span><br>
     <span style="font-size: 1rem: font-weight: 700;">Team Invezza</span>`;
 
