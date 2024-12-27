@@ -32,7 +32,7 @@ exports.timesheetAddValidator = [
       }
       if (inputDate < fiveDaysAgo) {
         throw new Error(
-          "Sorry.. tasks cannot be added for dates older than 5 days."
+          "Sorry.. tasks cannot be added for dates older than 10 days."
         );
       }
       return true;
@@ -51,7 +51,7 @@ exports.getTimesheetByDateValidator = [
 exports.timesheetDeleteValidator = [
   check("timesheetId", "timesheetId is required to delete").not().isEmpty(),
   check("taskId", "taskId is required to delete").not().isEmpty(),
-  check("date", "date is required and should be within the last 5 days")
+  check("date", "date is required and should be within the last 10 days")
     .not()
     .isEmpty()
     .toDate()
@@ -59,10 +59,10 @@ exports.timesheetDeleteValidator = [
       const inputDate = new Date(value);
       const currentDate = new Date();
       const fiveDaysAgo = new Date(currentDate);
-      fiveDaysAgo.setDate(currentDate.getDate() - 5);
+      fiveDaysAgo.setDate(currentDate.getDate() - 10);
 
       if (inputDate < fiveDaysAgo) {
-        throw new Error("You can not delete task older than 5 days");
+        throw new Error("You can not delete task older than 10 days");
       }
       return true;
     }),
