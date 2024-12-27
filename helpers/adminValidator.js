@@ -37,8 +37,21 @@ exports.timesheetAddValidator = [
       }
       return true;
     }),
-  check("taskName", "Task Name is required").not().isEmpty(),
-  check("description", "Add description to your task").not().isEmpty(),
+  check("taskName", "Task Name is required")
+    .not()
+    .isEmpty()
+    .isLength({ max: 50 })
+    .withMessage("Task Name must not exceed 50 characters"),
+  check("subTaskName", "subTask Name is required")
+    .not()
+    .isEmpty()
+    .isLength({ max: 100 })
+    .withMessage("Task Name must not exceed 100 characters"),
+  check("description", "Add description to your task")
+    .not()
+    .isEmpty()
+    .isLength({ max: 250 })
+    .withMessage("Task Name must not exceed 250 characters"),
   check("duration", "Add duration of your task").not().isEmpty(),
   check("project", "Specify your working project").not().isEmpty(),
   check("remark", "Specify your task status").not().isEmpty(),
