@@ -25,7 +25,7 @@ exports.timesheetAddValidator = [
       const inputDate = new Date(value);
       const currentDate = new Date();
       const fiveDaysAgo = new Date(currentDate);
-      fiveDaysAgo.setDate(currentDate.getDate() - 5);
+      fiveDaysAgo.setDate(currentDate.getDate() - 10);
 
       if (inputDate > currentDate) {
         throw new Error("Date cannot be in the future");
