@@ -181,6 +181,26 @@ const getAllAttendanceRecords = async (req, res) => {
   }
 };
 
+const getAllAttendanceRecordsByDate = async (req, res) => {
+  try {
+    // Extract the date from req.body
+    const { date } = req.body;
+
+    if (!date) {
+      return res
+        .status(400)
+        .json({ message: "Date is required in the request body" });
+    }
+
+    // Query the database to find attendance records that match the provided date
+    const attendance = await Attendance.find({ date });
+
+    return res.status(200).json({ attendance });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 // Function to get attendance for an employee
 const getAttendance = async (req, res) => {
   try {
@@ -287,4 +307,5 @@ module.exports = {
   getAttendance,
   attendaceCheck,
   getAllAttendanceRecords,
+  getAllAttendanceRecordsByDate,
 };

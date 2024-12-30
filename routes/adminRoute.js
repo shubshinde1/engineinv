@@ -190,4 +190,11 @@ router.get(
   attendanceController.getAllAttendanceRecords
 );
 
+router.post(
+  "/getattendancerecordsbydate",
+  auth,
+  onlyAdminAccess,
+  attendanceController.getAllAttendanceRecordsByDate
+);
+
 module.exports = router;
