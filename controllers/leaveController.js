@@ -1,5 +1,6 @@
 const LeaveApplication = require("../model/leaveApplicationModel");
 const LeaveBalance = require("../model/leaveBalanceModel");
+const Employee = require("../model/employeeModel");
 const { validationResult } = require("express-validator");
 
 const getLeaveDetails = async (req, res) => {
@@ -360,7 +361,10 @@ const leavehistory = async (req, res) => {
 
 const allLeaveHistory = async (req, res) => {
   try {
-    const leaveHistory = await LeaveApplication.find();
+    const leaveHistory = await LeaveApplication.find().populate({
+      path: "employee_id",
+      select: "name email", // Include only the `name` and `email` fields from Employee
+    });
 
     if (!leaveHistory.length) {
       return res.status(404).json({
@@ -369,9 +373,26 @@ const allLeaveHistory = async (req, res) => {
       });
     }
 
+    // Append employee name to each leave history record
+    const formattedLeaveHistory = leaveHistory.map((leave) => ({
+      _id: leave._id,
+      employee_id: leave.employee_id._id, // Keep original employee_id reference
+      employee_name: leave.employee_id.name, // Add employee name
+      employee_email: leave.employee_id.email, // Add employee email
+      fromdate: leave.fromdate,
+      todate: leave.todate,
+      leavetype: leave.leavetype,
+      leavesubtype: leave.leavesubtype,
+      holidayname: leave.holidayname,
+      reason: leave.reason,
+      applicationstatus: leave.applicationstatus,
+      totaldays: leave.totaldays,
+      halfday: leave.halfday,
+    }));
+
     res.status(200).json({
       success: true,
-      leaveHistory,
+      leaveHistory: formattedLeaveHistory,
     });
   } catch (error) {
     console.error("Error fetching all leave history:", error);

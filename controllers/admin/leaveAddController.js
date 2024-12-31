@@ -378,7 +378,7 @@ const approveLeave = async (req, res) => {
     // Check if currentStatus is the same as the new applicationstatus
 
     const statusMessages = {
-      0: "Awaiting",
+      0: "Pending",
       1: "Approved",
       2: "Declined",
     };
