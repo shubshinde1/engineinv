@@ -1,6 +1,6 @@
 const LeaveApplication = require("../model/leaveApplicationModel");
 const LeaveBalance = require("../model/leaveBalanceModel");
-const Employee = require("../model/employeeModel");
+const Employeeprofile = require("../model/employeeProfile");
 const { validationResult } = require("express-validator");
 
 const getLeaveDetails = async (req, res) => {
@@ -373,22 +373,34 @@ const allLeaveHistory = async (req, res) => {
       });
     }
 
-    // Append employee name to each leave history record
-    const formattedLeaveHistory = leaveHistory.map((leave) => ({
-      _id: leave._id,
-      employee_id: leave.employee_id._id, // Keep original employee_id reference
-      employee_name: leave.employee_id.name, // Add employee name
-      employee_email: leave.employee_id.email, // Add employee email
-      fromdate: leave.fromdate,
-      todate: leave.todate,
-      leavetype: leave.leavetype,
-      leavesubtype: leave.leavesubtype,
-      holidayname: leave.holidayname,
-      reason: leave.reason,
-      applicationstatus: leave.applicationstatus,
-      totaldays: leave.totaldays,
-      halfday: leave.halfday,
-    }));
+    // Loop over each leave history and get the profileUrl from Employeeprofile model
+    const formattedLeaveHistory = await Promise.all(
+      leaveHistory.map(async (leave) => {
+        // Fetch profileUrl from Employeeprofile based on employee_id
+        const employeeProfile = await Employeeprofile.findOne({
+          employee_id: leave.employee_id._id,
+        });
+
+        return {
+          _id: leave._id,
+          employee_id: leave.employee_id._id,
+          employee_name: leave.employee_id.name,
+          employee_email: leave.employee_id.email,
+          employee_profileUrl: employeeProfile
+            ? employeeProfile.profileUrl
+            : null,
+          fromdate: leave.fromdate,
+          todate: leave.todate,
+          leavetype: leave.leavetype,
+          leavesubtype: leave.leavesubtype,
+          holidayname: leave.holidayname,
+          reason: leave.reason,
+          applicationstatus: leave.applicationstatus,
+          totaldays: leave.totaldays,
+          halfday: leave.halfday,
+        };
+      })
+    );
 
     res.status(200).json({
       success: true,
