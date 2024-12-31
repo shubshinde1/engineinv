@@ -358,6 +358,31 @@ const leavehistory = async (req, res) => {
   }
 };
 
+const allLeaveHistory = async (req, res) => {
+  try {
+    const leaveHistory = await LeaveApplication.find();
+
+    if (!leaveHistory.length) {
+      return res.status(404).json({
+        success: false,
+        msg: "No leave history found.",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      leaveHistory,
+    });
+  } catch (error) {
+    console.error("Error fetching all leave history:", error);
+    res.status(500).json({
+      success: false,
+      msg: "Server error",
+      error: error.message,
+    });
+  }
+};
+
 const getoptinalholidaylist = async (req, res) => {
   try {
     const { employee_id } = req.body;
@@ -411,4 +436,5 @@ module.exports = {
   leavehistory,
   getoptinalholidaylist,
   deleteApplication,
+  allLeaveHistory,
 };

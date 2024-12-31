@@ -147,6 +147,13 @@ router.post(
 
 router.post("/leaveapplicationhistory", auth, leaveController.leavehistory);
 
+router.get(
+  "/allleaveapplications",
+  auth,
+  onlyAdminAccess,
+  leaveController.allLeaveHistory
+);
+
 router.post(
   "/deleteleaveapplication",
   auth,
