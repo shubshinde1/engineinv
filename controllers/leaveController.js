@@ -104,7 +104,7 @@ const applyLeave = async (req, res) => {
     const toDate = todate ? new Date(todate) : null;
 
     // Ensure fromdate is before or equal to todate if both are provided
-    if (todate && fromDate < toDate) {
+    if (todate && fromDate > toDate) {
       return res
         .status(400)
         .json({ message: "From Date Should Not be Today's or any Past date." });

@@ -272,9 +272,9 @@ const updateOptionalHolidaysOnJan1st = async () => {
     // Process each leave record
     await Promise.all(
       leaveRecords.map(async (leaveRecord) => {
-        // Set optionalholiday total and available to 2
-        leaveRecord.optionalholiday.total = 2;
-        leaveRecord.optionalholiday.available = 2;
+        // Set optionalholiday total and available to 1
+        leaveRecord.optionalholiday.total = 1;
+        leaveRecord.optionalholiday.available = 1;
 
         // Save the updated leave record
         await leaveRecord.save();
@@ -495,7 +495,7 @@ const approveLeave = async (req, res) => {
 // Condition 3: If currentStatus is 1 and applicationstatus is 2 (reverse the balances like Condition 2)
 // If currentStatus is 0 and applicationstatus is 2, only update the status without changing balances
 
-// addLeaves();
+addLeaves();
 // updateOptionalHolidaysOnJan1st();
 
 // const jobAddLeaves = new CronJob("*/1 * * * *", () => {
