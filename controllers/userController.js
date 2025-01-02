@@ -115,9 +115,11 @@ const forgotPassword = async (req, res) => {
     const msg =
       "<p>Hii " +
       userData.name +
-      ', Please click <a href="https://engineinv-production.up.railway.app/api/resetpassword?token=' +
+      ', Please click <a href="' +
+      process.env.REACT_APP_API_URL +
+      "/api/resetpassword?token=" +
       randonString +
-      '">Here<a/> to reset your Inezaa HRMS Portal password<p/>';
+      '">Here</a> to reset your Inezaa HRMS Portal password<p/>';
 
     await PasswordReset.deleteMany({ emp_id: userData._id });
 
