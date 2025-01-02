@@ -398,6 +398,8 @@ const allLeaveHistory = async (req, res) => {
           applicationstatus: leave.applicationstatus,
           totaldays: leave.totaldays,
           halfday: leave.halfday,
+          createdAt: leave.createdAt,
+          updatedAt: leave.updatedAt,
         };
       })
     );
