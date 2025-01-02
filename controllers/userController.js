@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Employee = require("../model/employeeModel");
+const EmployeeProfile = require("../model/employeeProfile");
 
 const Upload = require("../helpers/upload");
 const Employeeprofile = require("../model/employeeProfile");
@@ -213,11 +214,25 @@ const updatePassword = async (req, res) => {
 
 const viewUser = async (req, res) => {
   try {
-    const employesData = await Employee.find({
+    const employesDatas = await Employee.find({
       _id: {
         $ne: req.employee._id,
       },
     });
+
+    // Map through employees to add their profile URL
+    const employesData = await Promise.all(
+      employesDatas.map(async (employee) => {
+        const profile = await EmployeeProfile.findOne({
+          employee_id: employee._id.toString(),
+        });
+
+        return {
+          ...employee.toObject(),
+          profileUrl: profile ? profile.profileUrl : null, // Add profileUrl or null if not found
+        };
+      })
+    );
 
     return res.status(200).json({
       success: true,
