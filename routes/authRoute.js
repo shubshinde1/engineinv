@@ -30,8 +30,6 @@ router.post(
 
 router.post("/login", loginValidator, authController.loginEmployee);
 
-// router.post("/login", loginValidator, authController.loginEmployee);
-
 router.post(
   "/forgotpassword",
   forgotPasswordValidator,

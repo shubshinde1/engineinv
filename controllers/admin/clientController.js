@@ -158,15 +158,65 @@ const viewClient = async (req, res) => {
 
     let ClientData;
     if (id) {
-      ClientData = await Client.findById({ _id: id });
-      if (!ClientData) {
+      ClientData = await Client.aggregate([
+        {
+          $match: { _id: mongoose.Types.ObjectId(id) }, // Match the specific client if 'id' is provided
+        },
+        {
+          $lookup: {
+            from: "projects", // The name of your Project collection (in plural form)
+            localField: "_id", // Local field in Client collection (Client _id)
+            foreignField: "clientid", // Foreign field in Project collection (clientid)
+            as: "projects", // Alias for the array of matching projects
+          },
+        },
+        {
+          $project: {
+            clientname: 1,
+            companyname: 1,
+            email: 1,
+            phone: 1,
+            status: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            clientid: 1,
+            officeaddress: 1,
+            projectCount: { $size: "$projects" }, // Add the number of projects as 'projectCount'
+          },
+        },
+      ]);
+
+      if (ClientData.length === 0) {
         return res.status(404).json({
           success: false,
           msg: "Client not found",
         });
       }
     } else {
-      ClientData = await Client.find({});
+      ClientData = await Client.aggregate([
+        {
+          $lookup: {
+            from: "projects", // The name of your Project collection (in plural form)
+            localField: "_id", // Local field in Client collection (Client _id)
+            foreignField: "clientid", // Foreign field in Project collection (clientid)
+            as: "projects", // Alias for the array of matching projects
+          },
+        },
+        {
+          $project: {
+            clientname: 1,
+            companyname: 1,
+            email: 1,
+            phone: 1,
+            status: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            clientid: 1,
+            officeaddress: 1,
+            projectCount: { $size: "$projects" }, // Add the number of projects as 'projectCount'
+          },
+        },
+      ]);
     }
 
     return res.status(200).json({

@@ -493,11 +493,18 @@ const uploadFile = async (req, res) => {
 
     const upload = await Upload.uploadFile(req.file.path);
 
+    await Employee.findOneAndUpdate(
+      { _id: Employee_id },
+      { $set: { profile: upload.secure_url } },
+      { new: true } // Ensures you get the updated document back
+    );
+
     var employeeprofile = new Employeeprofile({
       profileUrl: upload.secure_url,
       employee_id: Employee_id,
     });
     var record = await employeeprofile.save();
+
     return res.status(200).json({
       success: true,
       msg: "File Uploded",
@@ -541,6 +548,11 @@ const deleteProfile = async (req, res) => {
 
     // Delete the profile
     await Employeeprofile.deleteOne({ employee_id: Employee_id });
+
+    await Employee.updateOne(
+      { _id: Employee_id },
+      { $unset: { profile: "" } } // Removes the profile field
+    );
 
     return res.status(200).json({
       success: true,

@@ -21,6 +21,7 @@ const employeeSchema = new mongoose.Schema(
     },
     profile: {
       type: String,
+      default: "",
     },
     status: {
       type: Number,

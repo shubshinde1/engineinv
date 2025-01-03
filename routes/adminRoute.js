@@ -123,6 +123,13 @@ router.get(
   projectController.viewPorject
 );
 
+router.post(
+  "/viewprojectbyclientid",
+  auth,
+  onlyAdminAccess,
+  projectController.viewProjectsByClient
+);
+
 //leave managemant routes
 router.post(
   "/addleaves",
