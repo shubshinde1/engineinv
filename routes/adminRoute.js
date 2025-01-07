@@ -131,6 +131,13 @@ router.get(
 );
 
 router.post(
+  "/viewprojectbyid",
+  auth,
+  onlyAdminAccess,
+  projectController.viewProjectById
+);
+
+router.post(
   "/viewprojectbyclientid",
   auth,
   onlyAdminAccess,

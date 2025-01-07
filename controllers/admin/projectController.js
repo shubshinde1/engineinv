@@ -142,6 +142,45 @@ const viewPorject = async (req, res) => {
   }
 };
 
+const viewProjectById = async (req, res) => {
+  try {
+    // Extract projectid from the request body
+    const { projectid } = req.body;
+
+    if (!projectid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Project ID is required",
+      });
+    }
+
+    // Fetch the specific project details
+    const projectData = await Project.findOne({ _id: projectid }).populate(
+      "clientid assignto"
+    );
+
+    if (!projectData) {
+      return res.status(404).json({
+        success: false,
+        msg: "Project not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      msg: "Project fetched successfully",
+      data: projectData,
+    });
+  } catch (error) {
+    console.error("Error fetching project:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to fetch project data",
+      error: error.message,
+    });
+  }
+};
+
 const viewProjectsByClient = async (req, res) => {
   const { clientid } = req.body; // Get clientid from request body
 
@@ -185,4 +224,5 @@ module.exports = {
   viewPorject,
   updateProject,
   viewProjectsByClient,
+  viewProjectById,
 };
