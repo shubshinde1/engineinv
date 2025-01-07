@@ -376,6 +376,28 @@ const allLeaveHistory = async (req, res) => {
     // Loop over each leave history and get the profileUrl from Employeeprofile model
     const formattedLeaveHistory = await Promise.all(
       leaveHistory.map(async (leave) => {
+        // Check if employee_id exists
+        if (!leave.employee_id) {
+          return {
+            _id: leave._id,
+            employee_id: null,
+            employee_name: null,
+            employee_email: null,
+            employee_profileUrl: null,
+            fromdate: leave.fromdate,
+            todate: leave.todate,
+            leavetype: leave.leavetype,
+            leavesubtype: leave.leavesubtype,
+            holidayname: leave.holidayname,
+            reason: leave.reason,
+            applicationstatus: leave.applicationstatus,
+            totaldays: leave.totaldays,
+            halfday: leave.halfday,
+            createdAt: leave.createdAt,
+            updatedAt: leave.updatedAt,
+          };
+        }
+
         // Fetch profileUrl from Employeeprofile based on employee_id
         const employeeProfile = await Employeeprofile.findOne({
           employee_id: leave.employee_id._id,

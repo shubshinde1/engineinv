@@ -99,6 +99,13 @@ router.post(
 
 router.get("/viewclient", auth, onlyAdminAccess, clientController.viewClient);
 
+router.post(
+  "/viewclientbyid",
+  auth,
+  onlyAdminAccess,
+  clientController.viewClientById
+);
+
 //project routes
 router.post(
   "/addproject",

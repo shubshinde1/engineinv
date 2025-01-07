@@ -1,5 +1,6 @@
 const Client = require("../../model/clientModel");
 // const Employee = require("../../model/employeeModel");
+const Project = require("../../model/projectModel");
 
 const { validationResult } = require("express-validator");
 
@@ -232,4 +233,45 @@ const viewClient = async (req, res) => {
   }
 };
 
-module.exports = { addClient, updateClient, viewClient };
+const viewClientById = async (req, res) => {
+  try {
+    const { clientid } = req.body;
+
+    if (!clientid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Client ID is required",
+      });
+    }
+
+    // Fetch the client data
+    const client = await Client.findOne({ _id: clientid }).lean(); // Use `.lean()` to return a plain JavaScript object
+
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        msg: "Client not found",
+      });
+    }
+
+    // Count projects associated with the client ID
+    const projectCount = await Project.countDocuments({ clientid });
+
+    // Add projectCount directly to the client object
+    client.projectCount = projectCount;
+
+    return res.status(200).json({
+      success: true,
+      msg: "Client fetched successfully",
+      data: client, // Send client object with projectCount directly
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to fetch client data",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { addClient, updateClient, viewClient, viewClientById };

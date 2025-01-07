@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
       });
     }
 
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone } = req.body;
 
     const isExist = await Employee.findOne({ email });
 
@@ -58,16 +58,21 @@ const createUser = async (req, res) => {
     const employee = new Employee(obj);
     const EmployeeData = await employee.save();
 
-    const mailContent = `<p>Hello <span style="font-size: 1rem; font-weight: 700;">${EmployeeData.name},</span></p>
-    <p>Hope you are doing well.</P>
-    <p>Your Invezza HRMS portal account has been created successfully!..<br>Here is your account details</p>
-    <p>Employee id - ${EmployeeData.empid}</br>
-    User Name - ${EmployeeData.name}</br>
-    Email - ${EmployeeData.email}</br>
-    Password - ${rowpassword}</p>
-    <p style="color:red">Note: Change you password after 1st login, Please never shaer your password with anyone. </p>
-    <span>Best Regards,</span><br>
-    <span style="font-size: 1rem: font-weight: 700;">Team Invezza</span>`;
+    const mailContent = `
+    <p>Hello <span style="font-size: 1rem; font-weight: 700;">${EmployeeData.name},</span></p>
+    <p>Hope you are doing well.</p>
+    <p>Your Invezza HRMS portal account has been created successfully! Below are your account details:</p>
+    <div>
+      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Employee ID</span> - ${EmployeeData.empid}</div><br>
+      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Username</span> - ${EmployeeData.name}</div><br>
+      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Email</span> - ${EmployeeData.email}</div><br>
+      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Password</span> - ${rowpassword}</div>
+    </div>
+    <p style="color: red; font-weight: 700;">
+      Note: Please change your password after your first login. Never share your password with anyone.
+    </p>
+    <p>Best regards,</p>
+    <p style="font-size: 1rem; font-weight: 700;">Team Invezza</p>`;
 
     sendMail(
       EmployeeData.email,
