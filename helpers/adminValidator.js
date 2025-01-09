@@ -127,10 +127,18 @@ exports.updateClientValidator = [
 exports.addProjectValidator = [
   check("projectname", "projectname is required").not().isEmpty(),
   check("clientid", "clientid is required").not().isEmpty(),
+  check(
+    "description",
+    "Description should not exceed 1000 characters"
+  ).isLength({ max: 1000 }),
 ];
 exports.updateProjectValidator = [
   check("id", "Id is required to update project details").not().isEmpty(),
   check("projectname", "projectname is required").not().isEmpty(),
+  check(
+    "description",
+    "Description should not exceed 1000 characters"
+  ).isLength({ max: 1000 }),
 ];
 
 exports.deleteUserValidator = [check("id", "id is required").not().isEmpty()];

@@ -138,6 +138,13 @@ router.post(
 );
 
 router.post(
+  "/deleteproject",
+  auth,
+  onlyAdminAccess,
+  projectController.deleteProject
+);
+
+router.post(
   "/viewprojectbyclientid",
   auth,
   onlyAdminAccess,

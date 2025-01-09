@@ -219,10 +219,47 @@ const viewProjectsByClient = async (req, res) => {
   }
 };
 
+const deleteProject = async (req, res) => {
+  try {
+    const { projectid } = req.body;
+
+    if (!projectid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Project ID is required for delete",
+      });
+    }
+
+    const projectData = await Project.findOne({ _id: projectid });
+
+    if (!projectData) {
+      return res.status(404).json({
+        success: false,
+        msg: "Project not found",
+      });
+    }
+
+    await Project.deleteOne({ _id: projectid });
+
+    return res.status(200).json({
+      success: true,
+      msg: "Project deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to delete project",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addProject,
   viewPorject,
   updateProject,
   viewProjectsByClient,
   viewProjectById,
+  deleteProject,
 };
