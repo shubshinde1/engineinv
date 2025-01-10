@@ -3,6 +3,7 @@ const leavebalance = require("../../model/leaveBalanceModel");
 const leaveapplication = require("../../model/leaveApplicationModel");
 const Employee = require("../../model/employeeModel");
 const { CronJob } = require("cron");
+const { sendMail } = require("../../helpers/mailer");
 
 const EXCLUDE_ID = "6687d8abecc0bcb379e20227"; // Admin _id exclude
 
@@ -217,6 +218,43 @@ const addHolidays = async (req, res) => {
   }
 };
 
+const deleteHoliday = async (req, res) => {
+  try {
+    const { holidayid } = req.body;
+
+    if (!holidayid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Holiday ID is required for delete",
+      });
+    }
+
+    const holidayRecords = await leavebalance.findOne({
+      _id: holidayid,
+    });
+
+    if (!holidayRecords) {
+      return res.status(404).json({
+        success: false,
+        msg: "Holiday not found",
+      });
+    }
+
+    await leavebalance.deleteOne({ _id: holidayid });
+    return res.status(200).json({
+      success: true,
+      msg: "Holiday deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting Holiday:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "Failed to delete Holiday",
+      error: error.message,
+    });
+  }
+};
+
 const viewHolidays = async (req, res) => {
   try {
     const { employee_id } = req.body;
@@ -346,6 +384,10 @@ const approveLeave = async (req, res) => {
         msg: "No employee found",
       });
     }
+
+    // console.log(isEmployee);
+
+    const employeeData = await Employee.findOne({ _id: employee_id });
 
     // Find the current application record
     const application = await leaveapplication.findOne({ _id: application_id });
@@ -478,6 +520,64 @@ const approveLeave = async (req, res) => {
       await findemployeetominus.save();
     }
 
+    // mail here
+
+    const mailContent = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 10px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
+    <!-- Header -->
+    <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Leave Application Status</h1>
+    </div>
+    <!-- Body -->
+    <div style="padding: 20px;">
+      <p style="margin: 0; font-size: 1rem;">
+        Hello <strong style="color: #3b82f6;">${employeeData.name}</strong>,
+      </p>
+      <p style="margin: 10px 0 20px; font-size: 1rem; color: #555;">
+        We hope this message finds you well. Here is an update on your leave application:
+      </p>
+      <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
+        <p style="margin: 0; font-size: 1rem; color: #333;">
+          <strong>Leave Period:</strong> ${isEmployee.fromdate} to ${
+      isEmployee.todate
+    }
+        </p>
+        <p style="margin: 10px 0 0; font-size: 1rem; color: #333;">
+          <strong>Total Days:</strong> ${isEmployee.totaldays}
+        </p>
+        <p style="margin: 10px 0 0; font-size: 1rem; color: #333;">
+          <strong>Status:</strong> 
+          ${
+            newRecord.applicationstatus === 1
+              ? `<span style="color: green; font-weight: bold;">Approved</span>`
+              : newRecord.applicationstatus === 0
+              ? `<span style="color: orange; font-weight: bold;">Pending</span>`
+              : newRecord.applicationstatus === 2
+              ? `<span style="color: red; font-weight: bold;">Declined</span>`
+              : `<span style="color: gray; font-weight: bold;">Unknown</span>`
+          }
+        </p>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div style=" padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+      <p style="margin: 0; font-size: 1rem; color: #333;"><strong>Best Regards,</strong></p>
+      <div style="margin-top: 10px; display: flex;">
+        <img src="https://res.cloudinary.com/shubshinde/image/upload/v1736494352/mhnnpoz5qv5d1xx0mf27.png" alt="Company Logo" style="width: 80px; margin-bottom: 10px;" />
+        <div style="margin-left: 10px;">
+        <p style="margin: 0; font-size: 1rem; color: #333;"><strong>HR Team Invezza</strong></p>
+        <p style="margin: 5px 0 0; font-size: 0.9rem; color: #555;">"Empowering Your Workplace"</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+    sendMail(
+      employeeData.email,
+      `Invezza HRMS Portal Leave Application Status`,
+      mailContent
+    );
+
     return res.status(200).json({
       success: true,
       data: newRecord,
@@ -519,4 +619,5 @@ module.exports = {
   jobUpdateOptional,
   updateLeaveBalanceForNewEmployee,
   approveLeave,
+  deleteHoliday,
 };

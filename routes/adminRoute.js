@@ -166,6 +166,13 @@ router.post(
   addHolidayValidator,
   leaveAddController.addHolidays
 );
+router.post(
+  "/deleteholidays",
+  auth,
+  onlyAdminAccess,
+  addHolidayValidator,
+  leaveAddController.deleteHoliday
+);
 
 router.post(
   "/updateleavebalancefornewemployee",

@@ -59,20 +59,56 @@ const createUser = async (req, res) => {
     const EmployeeData = await employee.save();
 
     const mailContent = `
-    <p>Hello <span style="font-size: 1rem; font-weight: 700;">${EmployeeData.name},</span></p>
-    <p>Hope you are doing well.</p>
-    <p>Your Invezza HRMS portal account has been created successfully! Below are your account details:</p>
-    <div>
-      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Employee ID</span> - ${EmployeeData.empid}</div><br>
-      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Username</span> - ${EmployeeData.name}</div><br>
-      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Email</span> - ${EmployeeData.email}</div><br>
-      <div style="display: flex; align-items: center;"><span style="width: 7rem; font-weight: bold;">Password</span> - ${rowpassword}</div>
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 10px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
+    <!-- Header -->
+    <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Welcome to Invezza HRMS</h1>
     </div>
-    <p style="color: red; font-weight: 700;">
-      Note: Please change your password after your first login. Never share your password with anyone.
-    </p>
-    <p>Best regards,</p>
-    <p style="font-size: 1rem; font-weight: 700;">Team Invezza</p>`;
+    <!-- Body -->
+    <div style="padding: 20px;">
+      <p style="margin: 0; font-size: 1rem;">
+        Hello <strong style="color: #3b82f6;">${EmployeeData.name}</strong>,
+      </p>
+      <p style="margin: 10px 0; font-size: 1rem; color: #555;">
+        Hope you are doing well.
+      </p>
+      <p style="margin: 10px 0 20px; font-size: 1rem; color: #555;">
+        Your Invezza HRMS portal account has been created successfully! Below are your account details:
+      </p>
+      <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Employee ID</span>
+          <span>- ${EmployeeData.empid}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Username</span>
+          <span>- ${EmployeeData.name}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Email</span>
+          <span>- ${EmployeeData.email}</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span style="width: 7rem; font-weight: bold;">Password</span>
+          <span>- ${rowpassword}</span>
+        </div>
+      </div>
+      <p style="margin: 20px 0; color: red; font-weight: bold;">
+        Note: Please change your password after your first login. Never share your password with anyone.
+      </p>
+    </div>
+    <!-- Footer -->
+    <div style="padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+      <p style="margin: 0; font-size: 1rem; color: #333;"><strong>Best Regards,</strong></p>
+      <div style="margin-top: 10px; display: flex;">
+        <img src="https://res.cloudinary.com/shubshinde/image/upload/v1736494352/mhnnpoz5qv5d1xx0mf27.png" alt="Company Logo" style="width: 80px; margin-bottom: 10px;" />
+        <div style="margin-left: 10px;">
+          <p style="margin: 0; font-size: 1rem; color: #333;"><strong>HR Team Invezza</strong></p>
+          <p style="margin: 5px 0 0; font-size: 0.9rem; color: #555;">"Empowering Your Workplace"</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
 
     sendMail(
       EmployeeData.email,
@@ -118,14 +154,41 @@ const forgotPassword = async (req, res) => {
 
     const randonString = randomstring.generate();
 
-    const msg =
-      "<p>Hii " +
-      userData.name +
-      ', Please click <a href="' +
-      process.env.REACT_APP_API_URL +
-      "/api/resetpassword?token=" +
-      randonString +
-      '">Here</a> to reset your Inezaa HRMS Portal password<p/>';
+    const msg = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 10px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 6px;">
+    <!-- Header -->
+    <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Password Reset Request</h1>
+    </div>
+    <!-- Body -->
+    <div style="padding: 20px;">
+      <p style="margin: 0; font-size: 1rem;">
+        Hello <strong style="color: #3b82f6;">${userData.name}</strong>,
+      </p>
+      <p style="margin: 10px 0 20px; font-size: 1rem; color: #555;">
+        We hope this message finds you well. You have requested to reset your password for the Invezza HRMS Portal. Please click the link below to proceed with resetting your password:
+      </p>
+      <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
+        <p style="margin: 10px 0; font-size: 1rem; color: #333;">
+          <a href="${process.env.REACT_APP_API_URL}/api/resetpassword?token=${randonString}" style="color: #3b82f6; text-decoration: none; font-weight: bold;">Click here to reset your password</a>
+        </p>
+      </div>
+      <p style="margin-top: 20px; color: #555; font-size: 1rem;">
+        If you did not request this, please ignore this email.
+      </p>
+    </div>
+    <!-- Footer -->
+    <div style="padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+      <p style="margin: 0; font-size: 1rem; color: #333;"><strong>Best Regards,</strong></p>
+      <div style="margin-top: 10px; display: flex;">
+        <img src="https://res.cloudinary.com/shubshinde/image/upload/v1736494352/mhnnpoz5qv5d1xx0mf27.png" alt="Company Logo" style="width: 80px; margin-bottom: 10px;" />
+        <div style="margin-left: 10px;">
+          <p style="margin: 0; font-size: 1rem; color: #333;"><strong>HR Team Invezza</strong></p>
+          <p style="margin: 5px 0 0; font-size: 0.9rem; color: #555;">"Empowering Your Workplace"</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
 
     await PasswordReset.deleteMany({ emp_id: userData._id });
 
@@ -394,16 +457,57 @@ const updateUser = async (req, res) => {
       { new: true }
     );
 
-    const mailContent = `<p>Hello <span style="font-size: 1rem; font-weight: 700;">${updatedEmployeeData.name},</span></p>
-    <p>Hope you are doing well.</P>
-    <p>Your Invezza HRMS portal account details has been updated successfully!..<br>Here is your new account details</p>
-    <p>Employee Id - ${updatedEmployeeData.empid}</br>
-    User Name - ${updatedEmployeeData.name}</br>
-    Email ID - ${updatedEmployeeData.email}</br>
-    Password - ${newPassword}</p>
-    <p style="color:red">Note:Please never shaer your password with anyone</p>
-    <span>Best Regards,</span><br>
-    <span style="font-size: 1rem: font-weight: 700;">Team Invezza</span>`;
+    const mailContent = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 10px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
+    <!-- Header -->
+    <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Invezza HRMS Account Updated</h1>
+    </div>
+    <!-- Body -->
+    <div style="padding: 20px;">
+      <p style="margin: 0; font-size: 1rem;">
+        Hello <strong style="color: #3b82f6;">${updatedEmployeeData.name}</strong>,
+      </p>
+      <p style="margin: 10px 0; font-size: 1rem; color: #555;">
+        Hope you are doing well.
+      </p>
+      <p style="margin: 10px 0 20px; font-size: 1rem; color: #555;">
+        Your Invezza HRMS portal account details have been updated successfully! Here are your new account details:
+      </p>
+      <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Employee ID</span>
+          <span>- ${updatedEmployeeData.empid}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Username</span>
+          <span>- ${updatedEmployeeData.name}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Email</span>
+          <span>- ${updatedEmployeeData.email}</span>
+        </div>
+        <div style="display: flex; align-items: center;">
+          <span style="width: 7rem; font-weight: bold;">Password</span>
+          <span>- ${newPassword}</span>
+        </div>
+      </div>
+      <p style="margin: 20px 0; color: red; font-weight: bold;">
+        Note: Please never share your password with anyone.
+      </p>
+    </div>
+    <!-- Footer -->
+    <div style="padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+      <p style="margin: 0; font-size: 1rem; color: #333;"><strong>Best Regards,</strong></p>
+      <div style="margin-top: 10px; display: flex;">
+        <img src="https://res.cloudinary.com/shubshinde/image/upload/v1736494352/mhnnpoz5qv5d1xx0mf27.png" alt="Company Logo" style="width: 80px; margin-bottom: 10px;" />
+        <div style="margin-left: 10px;">
+          <p style="margin: 0; font-size: 1rem; color: #333;"><strong>HR Team Invezza</strong></p>
+          <p style="margin: 5px 0 0; font-size: 0.9rem; color: #555;">"Empowering Your Workplace"</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
 
     sendMail(
       updatedEmployeeData.email,
