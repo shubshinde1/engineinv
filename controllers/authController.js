@@ -6,6 +6,8 @@ const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const { sendMail } = require("../helpers/mailer");
+
 const generateAccessToken = (employee) => {
   const token = jwt.sign(employee, process.env.ACCESS_TOKEN, {
     expiresIn: "10h",
@@ -385,6 +387,60 @@ const updateemployeebyadmin = async (req, res) => {
         $set: updateObj,
       },
       { new: true }
+    );
+
+    const mailContent = `
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 5px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
+    <!-- Header -->
+    <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
+      <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Invezza HRMS Account Updated</h1>
+    </div>
+    <!-- Body -->
+    <div style="padding: 20px;">
+      <p style="margin: 0; font-size: 1rem;">
+        Hello <strong style="color: #3b82f6;">${updatedEmployeeData.name}</strong>,
+      </p>
+      <p style="margin: 10px 0; font-size: 1rem; color: #555;">
+        Hope you are doing well.
+      </p>
+      <p style="margin: 10px 0 20px; font-size: 1rem; color: #555;">
+        Your Invezza HRMS portal account details have been updated successfully by the admin. Here are your new account details:
+      </p>
+      <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Employee ID</span>
+          <span>- ${updatedEmployeeData.empid}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Username</span>
+          <span>- ${updatedEmployeeData.name}</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+          <span style="width: 7rem; font-weight: bold;">Email</span>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">- ${updatedEmployeeData.email}</span>
+        </div>
+      </div>
+      <p style="margin: 20px 0; color: red; font-weight: bold;">
+        Note: Please never share your password with anyone.
+      </p>
+    </div>
+    <!-- Footer -->
+    <div style="padding: 20px; border-top: 1px solid #ddd; margin-top: 20px;">
+      <p style="margin: 0; font-size: 1rem; color: #333;"><strong>Best Regards,</strong></p>
+      <div style="margin-top: 10px; display: flex;">
+        <img src="https://res.cloudinary.com/shubshinde/image/upload/v1736494352/mhnnpoz5qv5d1xx0mf27.png" alt="Company Logo" style="width: 80px; margin-bottom: 10px;" />
+        <div style="margin-left: 10px;">
+          <p style="margin: 0; font-size: 1rem; color: #333;"><strong>HR Team Invezza</strong></p>
+          <p style="margin: 5px 0 0; font-size: 0.9rem; color: #555;">"Empowering Your Workplace"</p>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+    sendMail(
+      updatedEmployeeData.email,
+      `Invezza HRMS Portal Account Details Updated`,
+      mailContent
     );
 
     return res.status(200).json({

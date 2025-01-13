@@ -595,7 +595,7 @@ const approveLeave = async (req, res) => {
 // Condition 3: If currentStatus is 1 and applicationstatus is 2 (reverse the balances like Condition 2)
 // If currentStatus is 0 and applicationstatus is 2, only update the status without changing balances
 
-// addLeaves();
+addLeaves();
 // updateOptionalHolidaysOnJan1st();
 
 // const jobAddLeaves = new CronJob("*/1 * * * *", () => {

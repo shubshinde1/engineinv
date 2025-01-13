@@ -458,7 +458,7 @@ const updateUser = async (req, res) => {
     );
 
     const mailContent = `
-  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 10px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
+  <div style="font-family: Arial, sans-serif; max-width: 600px;  padding: 20px 5px; background-color: #f9f9f9; color: #333; line-height: 1.6; border-radius: 8px;">
     <!-- Header -->
     <div style="text-align: center; padding: 10px 0; border-bottom: 1px solid #ddd;">
       <h1 style="margin: 0; font-size: 1.5rem; color: #3b82f6;">Invezza HRMS Account Updated</h1>
@@ -485,11 +485,11 @@ const updateUser = async (req, res) => {
         </div>
         <div style="display: flex; align-items: center; margin-bottom: 10px;">
           <span style="width: 7rem; font-weight: bold;">Email</span>
-          <span>- ${updatedEmployeeData.email}</span>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">- ${updatedEmployeeData.email}</span>
         </div>
         <div style="display: flex; align-items: center;">
           <span style="width: 7rem; font-weight: bold;">Password</span>
-          <span>- ${newPassword}</span>
+          <span>- **********</span>
         </div>
       </div>
       <p style="margin: 20px 0; color: red; font-weight: bold;">
