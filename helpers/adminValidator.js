@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+const Setting = require("../model/settingsModel");
 
 exports.permissionAddValidator = [
   check("permission_name", "Permission Name is required").not().isEmpty(),
@@ -15,24 +16,31 @@ exports.permissionUpdateValidator = [
     .isEmpty(),
 ];
 
+const getAddTimesheetLimit = async () => {
+  const setting = await Setting.findOne(); // Fetch the first settings document
+  return setting?.addtimesheetlimit || 5; // Fallback to 5 if not found
+};
+
 exports.timesheetAddValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
-  check("date", "date is required and should be within the last 5 days")
+  check("date")
     .not()
     .isEmpty()
-    .toDate()
-    .custom((value) => {
+    .withMessage("date is required")
+    .custom(async (value) => {
+      const addTimesheetLimit = await getAddTimesheetLimit(); // Dynamically get the limit
       const inputDate = new Date(value);
       const currentDate = new Date();
-      const fiveDaysAgo = new Date(currentDate);
-      fiveDaysAgo.setDate(currentDate.getDate() - 10);
+      const limitDate = new Date(currentDate);
+      limitDate.setDate(currentDate.getDate() - addTimesheetLimit);
+      console.log(addTimesheetLimit);
 
       if (inputDate > currentDate) {
         throw new Error("Date cannot be in the future");
       }
-      if (inputDate < fiveDaysAgo) {
+      if (inputDate < limitDate) {
         throw new Error(
-          "Sorry.. tasks cannot be added for dates older than 10 days."
+          `Sorry, tasks cannot be added for dates older than ${addTimesheetLimit} days.`
         );
       }
       return true;

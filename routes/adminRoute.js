@@ -11,6 +11,7 @@ const leaveAddController = require("../controllers/admin/leaveAddController");
 const userController = require("../controllers/userController");
 const authController = require("../controllers/authController");
 const attendanceController = require("../controllers/attendanceController");
+const settingController = require("../controllers/admin/settingController");
 
 const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 
@@ -30,6 +31,7 @@ const {
   addLeavesValidator,
   addHolidayValidator,
 } = require("../helpers/validation");
+const { route } = require("./commonRoute");
 
 //this routes only accessible from admin role
 router.post(
@@ -230,6 +232,20 @@ router.post(
   auth,
   onlyAdminAccess,
   attendanceController.getAllAttendanceRecordsByDate
+);
+
+router.post(
+  "/updatetimesheetlimit",
+  auth,
+  onlyAdminAccess,
+  settingController.updateTimesheetLimit
+);
+
+router.get(
+  "/gettimesheetlimit",
+  auth,
+  onlyAdminAccess,
+  settingController.getTimesheetLimit
 );
 
 module.exports = router;
