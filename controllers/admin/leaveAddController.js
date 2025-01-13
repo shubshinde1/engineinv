@@ -606,7 +606,7 @@ const jobAddLeaves = new CronJob("0 0 1 * *", () => {
 
 // const jobUpdateOptional = new CronJob("*/1 * * * *", () => {
 const jobUpdateOptional = new CronJob("0 0 1 1 *", () => {
-  updateOptionalHolidaysOnJan1st();
+  // updateOptionalHolidaysOnJan1st();
 });
 // updateOptional will check by every years 1st jan
 
