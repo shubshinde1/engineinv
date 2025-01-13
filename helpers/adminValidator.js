@@ -21,6 +21,16 @@ const getAddTimesheetLimit = async () => {
   return setting?.addtimesheetlimit || 5; // Fallback to 5 if not found
 };
 
+const getUpdateTimesheetLimit = async () => {
+  const setting = await Setting.findOne(); // Fetch the first settings document
+  return setting?.updatetimesheetlimit || 5; // Fallback to 5 if not found
+};
+
+const getDeleteTimesheetLimit = async () => {
+  const setting = await Setting.findOne(); // Fetch the first settings document
+  return setting?.deletetimesheetlimit || 5; // Fallback to 5 if not found
+};
+
 exports.timesheetAddValidator = [
   check("employee_id", "employee_id is required").not().isEmpty(),
   check("date")
@@ -75,14 +85,20 @@ exports.timesheetDeleteValidator = [
     .not()
     .isEmpty()
     .toDate()
-    .custom((value) => {
+    .custom(async (value) => {
+      const deleteTimesheetLimit = await getDeleteTimesheetLimit(); // Dynamically get the limit
       const inputDate = new Date(value);
       const currentDate = new Date();
-      const fiveDaysAgo = new Date(currentDate);
-      fiveDaysAgo.setDate(currentDate.getDate() - 10);
+      const limitDate = new Date(currentDate);
+      limitDate.setDate(currentDate.getDate() - deleteTimesheetLimit);
 
-      if (inputDate < fiveDaysAgo) {
-        throw new Error("You can not delete task older than 10 days");
+      if (inputDate > currentDate) {
+        throw new Error("Date cannot be in the future");
+      }
+      if (inputDate < limitDate) {
+        throw new Error(
+          `Sorry, tasks cannot be deleted for dates older than ${deleteTimesheetLimit} days.`
+        );
       }
       return true;
     }),
@@ -98,14 +114,20 @@ exports.timesheetUpdateValidator = [
     .isISO8601()
     .withMessage("Invalid date format")
     .toDate()
-    .custom((value) => {
+    .custom(async (value) => {
+      const updateTimesheetLimit = await getUpdateTimesheetLimit(); // Dynamically get the limit
       const inputDate = new Date(value);
       const currentDate = new Date();
-      const fiveDaysAgo = new Date(
-        currentDate.setDate(currentDate.getDate() - 5)
-      );
-      if (inputDate < fiveDaysAgo) {
-        throw new Error("Sorry.. You can not update task older than 5 days");
+      const limitDate = new Date(currentDate);
+      limitDate.setDate(currentDate.getDate() - updateTimesheetLimit);
+
+      if (inputDate > currentDate) {
+        throw new Error("Date cannot be in the future");
+      }
+      if (inputDate < limitDate) {
+        throw new Error(
+          `Sorry.. You cannot update tasks older than ${updateTimesheetLimit} days`
+        );
       }
       return true;
     }),
