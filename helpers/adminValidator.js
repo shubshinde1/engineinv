@@ -33,7 +33,6 @@ exports.timesheetAddValidator = [
       const currentDate = new Date();
       const limitDate = new Date(currentDate);
       limitDate.setDate(currentDate.getDate() - addTimesheetLimit);
-      console.log(addTimesheetLimit);
 
       if (inputDate > currentDate) {
         throw new Error("Date cannot be in the future");

@@ -101,19 +101,19 @@ const fillTimesheet = async (req, res) => {
 
 const getTimesheetByDate = async (req, res) => {
   try {
-    const { employee_id, startDate, endDate } = req.body;
+    const { employee_id, date } = req.body; // Only taking 'date' instead of startDate and endDate
 
-    if (!employee_id || !startDate || !endDate) {
+    if (!employee_id || !date) {
       return res.status(400).json({
         success: false,
         msg: "Missing required request body parameters",
       });
     }
 
-    // Fetch timesheet data for the specified date range
+    // Fetch timesheet data for the specified date
     const timesheets = await Timesheet.find({
       employee_id,
-      date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+      date, // Directly filtering by the exact date
     })
       .populate({
         path: "task.project",
@@ -124,11 +124,17 @@ const getTimesheetByDate = async (req, res) => {
         select: "_id", // Adjust the fields to select as needed
       });
 
-    // Aggregate tasks by date
+    // If no timesheets found for that date, return an empty response
+    if (timesheets.length === 0) {
+      return res.status(404).json({
+        success: false,
+        msg: "No timesheet data found for the given date",
+      });
+    }
+
+    // Aggregate tasks by date (though in this case, it will always be the same date)
     const groupedByDate = timesheets.reduce((acc, timesheet) => {
-      // Ensure date is a Date object
-      const date = new Date(timesheet.date);
-      const formattedDate = date.toISOString().split("T")[0];
+      const formattedDate = timesheet.date; // The date is already in the desired format
 
       if (!acc[formattedDate]) {
         acc[formattedDate] = [];
