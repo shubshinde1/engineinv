@@ -385,7 +385,9 @@ const approveLeave = async (req, res) => {
       });
     }
 
-    // console.log(isEmployee);
+    const currentApplication = await leaveapplication.findOne({
+      _id: application_id,
+    });
 
     const employeeData = await Employee.findOne({ _id: employee_id });
 
@@ -407,12 +409,12 @@ const approveLeave = async (req, res) => {
     const currentDateOnly = currentDate.setHours(0, 0, 0, 0);
 
     // If applnDate is today or before, block the change
-    if (applnDateOnly <= currentDateOnly) {
-      return res.status(400).json({
-        success: false,
-        msg: "You can't change old application status",
-      });
-    }
+    // if (applnDateOnly <= currentDateOnly) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     msg: "You can't change old application status",
+    //   });
+    // }
 
     // Get the current application status
     const currentStatus = application.applicationstatus;
@@ -538,12 +540,12 @@ const approveLeave = async (req, res) => {
       </p>
       <div style="padding: 15px; background-color: white; border-left: 4px solid #3b82f6; border-radius: 6px;">
         <p style="margin: 0; font-size: 1rem; color: #333;">
-          <strong>Leave Period:</strong> ${isEmployee.fromdate} to ${
-      isEmployee.todate
+          <strong>Leave Period:</strong> ${currentApplication.fromdate} to ${
+      currentApplication.todate
     }
         </p>
         <p style="margin: 10px 0 0; font-size: 1rem; color: #333;">
-          <strong>Total Days:</strong> ${isEmployee.totaldays}
+          <strong>Total Days:</strong> ${currentApplication.totaldays}
         </p>
         <p style="margin: 10px 0 0; font-size: 1rem; color: #333;">
           <strong>Status:</strong> 

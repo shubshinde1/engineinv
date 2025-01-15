@@ -69,6 +69,9 @@ const employeeSchema = new mongoose.Schema(
     techexperties: {
       type: Array,
     },
+    lastwd: {
+      type: String,
+    },
 
     // contact details
 
