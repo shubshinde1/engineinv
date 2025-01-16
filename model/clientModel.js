@@ -19,10 +19,10 @@ const clientSchema = new mongoose.Schema(
       type: Number,
       require: true,
     },
-    linkedinurl: {
+    officeaddress: {
       type: String,
     },
-    officeaddress: {
+    linkedinurl: {
       type: String,
     },
     paymentcycle: {
@@ -31,7 +31,7 @@ const clientSchema = new mongoose.Schema(
     industry: {
       type: String,
     },
-    timezone: {
+    country: {
       type: String,
     },
     primarytechnology: {
