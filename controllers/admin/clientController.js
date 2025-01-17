@@ -345,7 +345,7 @@ const softDeleteClient = async (req, res) => {
     if (activeProject.length > 0) {
       return res.status(400).json({
         success: false,
-        msg: `There are ${activeProject.length} projects associated with this client, Delete that project first`,
+        msg: `There are ${activeProject.length} project associated with this client, Delete that project first`,
       });
     }
 
