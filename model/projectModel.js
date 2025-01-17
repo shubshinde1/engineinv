@@ -27,6 +27,10 @@ const projectSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isdeleted: {
+      type: Boolean,
+      default: false,
+    },
     assignto: {
       type: mongoose.Schema.Types.ObjectId, //employee model object reference to realtion
       ref: "Employee",

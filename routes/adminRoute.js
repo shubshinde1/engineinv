@@ -108,6 +108,13 @@ router.post(
   clientController.viewClientById
 );
 
+router.post(
+  "/softdeleteclient",
+  auth,
+  onlyAdminAccess,
+  clientController.softDeleteClient
+);
+
 //project routes
 router.post(
   "/addproject",
@@ -144,6 +151,12 @@ router.post(
   auth,
   onlyAdminAccess,
   projectController.deleteProject
+);
+router.post(
+  "/softdeleteproject",
+  auth,
+  onlyAdminAccess,
+  projectController.softdeleteproject
 );
 
 router.post(

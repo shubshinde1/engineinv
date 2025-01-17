@@ -176,6 +176,19 @@ const viewClient = async (req, res) => {
           },
         },
         {
+          $addFields: {
+            noOfActiveProjects: {
+              $size: {
+                $filter: {
+                  input: "$projects", // Array of projects
+                  as: "project", // Alias for each project
+                  cond: { $eq: ["$$project.isdeleted", false] }, // Condition to filter active projects
+                },
+              },
+            },
+          },
+        },
+        {
           $project: {
             clientname: 1,
             companyname: 1,
@@ -186,7 +199,9 @@ const viewClient = async (req, res) => {
             updatedAt: 1,
             clientid: 1,
             officeaddress: 1,
-            projectCount: { $size: "$projects" }, // Add the number of projects as 'projectCount'
+            isdeleted: 1,
+            projectCount: { $size: "$projects" }, // Total number of projects
+            noOfActiveProjects: 1, // Number of active projects
           },
         },
       ]);
@@ -208,6 +223,19 @@ const viewClient = async (req, res) => {
           },
         },
         {
+          $addFields: {
+            noOfActiveProjects: {
+              $size: {
+                $filter: {
+                  input: "$projects", // Array of projects
+                  as: "project", // Alias for each project
+                  cond: { $eq: ["$$project.isdeleted", false] }, // Condition to filter active projects
+                },
+              },
+            },
+          },
+        },
+        {
           $project: {
             clientname: 1,
             companyname: 1,
@@ -218,7 +246,9 @@ const viewClient = async (req, res) => {
             updatedAt: 1,
             clientid: 1,
             officeaddress: 1,
-            projectCount: { $size: "$projects" }, // Add the number of projects as 'projectCount'
+            isdeleted: 1,
+            projectCount: { $size: "$projects" }, // Total number of projects
+            noOfActiveProjects: 1, // Number of active projects
           },
         },
       ]);
@@ -278,4 +308,67 @@ const viewClientById = async (req, res) => {
   }
 };
 
-module.exports = { addClient, updateClient, viewClient, viewClientById };
+const softDeleteClient = async (req, res) => {
+  try {
+    const { clientid } = req.body;
+
+    if (!clientid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Client ID is required",
+      });
+    }
+
+    // Fetch the client data
+    const client = await Client.findOne({ _id: clientid }); // Use `.lean()` to return a plain JavaScript object
+
+    if (!client) {
+      return res.status(404).json({
+        success: false,
+        msg: "Client not found",
+      });
+    }
+
+    if (client.isdeleted) {
+      return res.status(400).json({
+        success: false,
+        msg: "Client is already deleted",
+      });
+    }
+
+    // Check if the client has active projects
+    const activeProject = await Project.find({
+      clientid: clientid,
+      isdeleted: false,
+    });
+
+    if (activeProject.length > 0) {
+      return res.status(400).json({
+        success: false,
+        msg: `There are ${activeProject.length} projects associated with this client, Delete that project first`,
+      });
+    }
+
+    // Set isdeleted = true
+    await Client.updateOne({ _id: clientid }, { isdeleted: true });
+
+    res.status(200).json({
+      success: true,
+      msg: "Client has been soft deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      msg: "An error occurred while soft deleting the client",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = {
+  addClient,
+  updateClient,
+  viewClient,
+  viewClientById,
+  softDeleteClient,
+};

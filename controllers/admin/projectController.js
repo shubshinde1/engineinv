@@ -255,6 +255,50 @@ const deleteProject = async (req, res) => {
   }
 };
 
+const softdeleteproject = async (req, res) => {
+  try {
+    const { projectid } = req.body;
+
+    if (!projectid) {
+      return res.status(400).json({
+        success: false,
+        msg: "Project ID is required",
+      });
+    }
+
+    // Fetch the project data
+    const project = await Project.findOne({ _id: projectid }); // Use `.lean()` to return a plain JavaScript object
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        msg: "Project not found",
+      });
+    }
+
+    if (project.isdeleted) {
+      return res.status(400).json({
+        success: false,
+        msg: "Project is already deleted",
+      });
+    }
+
+    // Set isdeleted = true
+    await Project.updateOne({ _id: projectid }, { isdeleted: true });
+
+    res.status(200).json({
+      success: true,
+      msg: "Project has been soft deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      msg: "An error occurred while soft deleting the project",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   addProject,
   viewPorject,
@@ -262,4 +306,5 @@ module.exports = {
   viewProjectsByClient,
   viewProjectById,
   deleteProject,
+  softdeleteproject,
 };

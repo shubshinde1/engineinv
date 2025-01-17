@@ -53,6 +53,10 @@ const clientSchema = new mongoose.Schema(
       type: Number,
       default: 1, // 1 = active, 0 = inactive
     },
+    isdeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
