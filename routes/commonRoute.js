@@ -72,7 +72,7 @@ router.post(
 
 router.get("/getprojectdetails", auth, timesheetController.getProjectDetails);
 
-router.get("/viewtimesheet", auth, timesheetController.viewTimesheet);
+router.post("/viewtimesheet", auth, timesheetController.viewTimesheet);
 
 router.post(
   "/deletetimesheet",

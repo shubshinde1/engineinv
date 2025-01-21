@@ -242,10 +242,25 @@ const getTimesheetdays = async (req, res) => {
 
 const viewTimesheet = async (req, res) => {
   try {
-    const timesheetData = await Timesheet.find({}).populate(
-      "employee_id task.project"
-    );
-    // .populate("project");
+    const { employee_id } = req.body; // Get the employee_id from the request body
+
+    if (!employee_id) {
+      return res.status(400).json({
+        success: false,
+        msg: "Employee ID is required",
+      });
+    }
+
+    // Fetch timesheet data for the specified employee
+    const timesheetData = await Timesheet.find({ employee_id }) // Filter by employee_id
+      .populate("employee_id task.project");
+
+    if (timesheetData.length === 0) {
+      return res.status(404).json({
+        success: false,
+        msg: "No timesheet data found for this employee",
+      });
+    }
 
     return res.status(200).json({
       success: true,
@@ -253,10 +268,10 @@ const viewTimesheet = async (req, res) => {
       data: timesheetData,
     });
   } catch (error) {
-    console.error("Error saving timesheet:", error);
+    console.error("Error fetching timesheet:", error);
     return res.status(500).json({
       success: false,
-      msg: "Failed to add timesheet data",
+      msg: "Failed to fetch timesheet data",
       error: error.message,
     });
   }
