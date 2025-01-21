@@ -272,19 +272,14 @@ const updatePassword = async (req, res) => {
   }
 };
 
-// const resetSuccess = async (req, res) => {
-//   try {
-//     return res.render("resetsuccess");
-//   } catch (error) {
-//     return res.render("404");
-//   }
-// };
-
 const viewUser = async (req, res) => {
   try {
     const employesDatas = await Employee.find({
-      _id: {
-        $ne: req.employee._id,
+      // _id: {
+      //   $ne: req.employee._id,
+      // },
+      auth: {
+        $nin: [1],
       },
     });
 
