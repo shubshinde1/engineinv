@@ -216,7 +216,7 @@ const getAttendance = async (req, res) => {
   }
 };
 
-// Function to check attendance for employees who haven't punched in by 11:57 AM
+// Function to check attendance for employees who haven't punched in by 01:59 PM
 const checkAttendance = async () => {
   try {
     const now = new Date();
@@ -301,6 +301,46 @@ const checkAttendance = async () => {
 // checkAttendance();
 const attendaceCheck = new CronJob("59 14 * * *", checkAttendance);
 
+const markEmployeesOut = async () => {
+  try {
+    const now = new Date();
+    const currentDate = now.toISOString().split("T")[0];
+    const currentTime = now.toISOString();
+
+    // Get all employees who have 'mark' as 'In'
+    const employeesWithInStatus = await Attendance.find({
+      date: currentDate,
+      mark: "In",
+    });
+
+    if (employeesWithInStatus.length > 0) {
+      for (const attendance of employeesWithInStatus) {
+        console.log(`Marking employee ID: ${attendance.employee_id} as 'Out'`);
+        attendance.mark = "Out";
+        attendance.outtime = currentTime;
+        attendance.outlocation = null;
+
+        if (attendance.intime && attendance.outtime) {
+          const intimeDate = new Date(attendance.intime);
+          const outtimeDate = new Date(attendance.outtime);
+
+          const totalMs = outtimeDate - intimeDate;
+          attendance.totalhrs = totalMs;
+          attendance.attendancestatus = totalMs >= 4 * 60 * 60 * 1000 ? 1 : 2; // 1 = present full day, 2 = half day
+        }
+
+        await attendance.save();
+      }
+    } else {
+      console.log("No employee found with 'In' status.");
+    }
+  } catch (error) {
+    console.error("Error in marking employees as Out:", error);
+  }
+};
+
+const markAllout = new CronJob("59 23 * * *", markEmployeesOut);
+
 module.exports = {
   markAttendance,
   endOfDayProcessing,
@@ -308,4 +348,6 @@ module.exports = {
   attendaceCheck,
   getAllAttendanceRecords,
   getAllAttendanceRecordsByDate,
+  markAllout,
+  markEmployeesOut,
 };

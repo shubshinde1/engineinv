@@ -1,4 +1,7 @@
-const { attendaceCheck } = require("../controllers/attendanceController");
+const {
+  attendaceCheck,
+  markAllout,
+} = require("../controllers/attendanceController");
 const { jobAddLeaves } = require("../controllers/admin/leaveAddController");
 const {
   jobUpdateOptional,
@@ -8,6 +11,7 @@ const startJobs = () => {
   attendaceCheck.start();
   jobAddLeaves.start();
   jobUpdateOptional.start();
+  markAllout.start();
 };
 
 module.exports = startJobs;
