@@ -318,7 +318,7 @@ const markEmployeesOut = async () => {
         console.log(`Marking employee ID: ${attendance.employee_id} as 'Out'`);
         attendance.mark = "Out";
         attendance.outtime = currentTime;
-        attendance.outlocation = null;
+        attendance.outlocation = { latitude: 0, longitude: 0 };
 
         if (attendance.intime && attendance.outtime) {
           const intimeDate = new Date(attendance.intime);
