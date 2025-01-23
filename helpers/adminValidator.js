@@ -17,18 +17,18 @@ exports.permissionUpdateValidator = [
 ];
 
 const getAddTimesheetLimit = async () => {
-  const setting = await Setting.findOne(); // Fetch the first settings document
-  return setting?.addtimesheetlimit || 5; // Fallback to 5 if not found
+  const setting = await Setting.findOne({}, "timesheet.addtimesheetlimit");
+  return setting?.timesheet?.addtimesheetlimit || 5; // Fallback to 5 if not found
 };
 
 const getUpdateTimesheetLimit = async () => {
-  const setting = await Setting.findOne(); // Fetch the first settings document
-  return setting?.updatetimesheetlimit || 5; // Fallback to 5 if not found
+  const setting = await Setting.findOne({}, "timesheet.updatetimesheetlimit");
+  return setting?.timesheet?.updatetimesheetlimit || 5; // Fallback to 5 if not found
 };
 
 const getDeleteTimesheetLimit = async () => {
-  const setting = await Setting.findOne(); // Fetch the first settings document
-  return setting?.deletetimesheetlimit || 5; // Fallback to 5 if not found
+  const setting = await Setting.findOne({}, "timesheet.deletetimesheetlimit");
+  return setting?.timesheet?.deletetimesheetlimit || 5; // Fallback to 5 if not found
 };
 
 exports.timesheetAddValidator = [

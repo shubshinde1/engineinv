@@ -2,6 +2,7 @@ const Timesheet = require("../model/timesheetModel");
 const Employee = require("../model/employeeModel");
 const { validationResult } = require("express-validator");
 const Project = require("../model/projectModel");
+const Attendance = require("../model/attendaceModel");
 
 const fillTimesheet = async (req, res) => {
   try {
@@ -43,6 +44,32 @@ const fillTimesheet = async (req, res) => {
     }
 
     const empid = employee.empid;
+
+    // Check attendance for the provided date
+    const attendance = await Attendance.findOne({ employee_id, date });
+
+    if (
+      !attendance ||
+      (attendance.attendancestatus !== 1 && attendance.attendancestatus !== 2)
+    ) {
+      console.log("1ST CASE");
+
+      return res.status(400).json({
+        success: false,
+        msg: "We see that you were absent on this day",
+      });
+    }
+
+    const totalHours = attendance.totalhrs / (60 * 60 * 1000); // Convert milliseconds to hours
+
+    if (attendance.attendancestatus === 2 && totalHours < 4.5) {
+      console.log("2ND CASE");
+
+      return res.status(400).json({
+        success: false,
+        msg: "You have not completed the minimum required hours for the day",
+      });
+    }
 
     // Check if a timesheet entry for the given date already exists
     let timesheet = await Timesheet.findOne({ employee_id, date });

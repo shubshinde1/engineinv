@@ -2,16 +2,12 @@ const Setting = require("../../model/settingsModel");
 
 const updateTimesheetLimit = async (req, res) => {
   try {
-    const { addtimesheetlimit, updatetimesheetlimit, deletetimesheetlimit } =
-      req.body;
+    const { addtimesheetlimit, updatetimesheetlimit, deletetimesheetlimit } = req.body;
 
     const updateFields = {};
-    if (addtimesheetlimit !== undefined)
-      updateFields.addtimesheetlimit = addtimesheetlimit;
-    if (updatetimesheetlimit !== undefined)
-      updateFields.updatetimesheetlimit = updatetimesheetlimit;
-    if (deletetimesheetlimit !== undefined)
-      updateFields.deletetimesheetlimit = deletetimesheetlimit;
+    if (addtimesheetlimit !== undefined) updateFields["timesheet.addtimesheetlimit"] = addtimesheetlimit;
+    if (updatetimesheetlimit !== undefined) updateFields["timesheet.updatetimesheetlimit"] = updatetimesheetlimit;
+    if (deletetimesheetlimit !== undefined) updateFields["timesheet.deletetimesheetlimit"] = deletetimesheetlimit;
 
     // Find the settings document and update
     const updatedSetting = await Setting.findOneAndUpdate(
@@ -22,34 +18,36 @@ const updateTimesheetLimit = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      msg: "timesheetlimit updated successfully.",
+      msg: "Timesheet limits updated successfully.",
       data: updatedSetting,
     });
   } catch (error) {
-    console.error("Error updating timesheetlimit:", error);
+    console.error("Error updating timesheet limits:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while updating timesheetlimit.",
+      msg: "An error occurred while updating timesheet limits.",
     });
   }
 };
 
 const getTimesheetLimit = async (req, res) => {
   try {
-    const timesheetlimit = await Setting.findOne({});
+    const timesheetLimit = await Setting.findOne({}, "timesheet");
     return res.status(200).json({
       success: true,
-      msg: "timesheetlimit fetched successfully.",
-      data: timesheetlimit,
+      msg: "Timesheet limits fetched successfully.",
+      data: timesheetLimit?.timesheet || {},
     });
   } catch (error) {
-    console.error("Error fetching timesheetlimit:", error);
+    console.error("Error fetching timesheet limits:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while fetching timesheetlimit.",
+      msg: "An error occurred while fetching timesheet limits.",
     });
   }
 };
+
+
 
 module.exports = {
   updateTimesheetLimit,

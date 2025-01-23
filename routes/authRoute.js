@@ -16,6 +16,7 @@ const { onlyAdminAccess } = require("../middleware/adminMiddleware");
 const {
   registerValidator,
   loginValidator,
+  otpValidator,
   forgotPasswordValidator,
   addemployeeDetailsValidator,
 } = require("../helpers/validation");
@@ -29,6 +30,8 @@ router.post(
 );
 
 router.post("/login", loginValidator, authController.loginEmployee);
+
+// router.post("/loginstep2", otpValidator, authController.verifyotp);
 
 router.post(
   "/forgotpassword",

@@ -14,6 +14,12 @@ exports.loginValidator = [
   }),
   check("password", "Password is required").not().isEmpty(),
 ];
+exports.otpValidator = [
+  check("email", "Email is required").isEmail().normalizeEmail({
+    gmail_remove_dots: true,
+  }),
+  check("otp", "otp is required").not().isEmpty(),
+];
 
 exports.forgotPasswordValidator = [
   check("email", "Email is required").isEmail().normalizeEmail({
