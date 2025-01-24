@@ -261,4 +261,8 @@ router.get(
   settingController.getTimesheetLimit
 );
 
+router.post("/updatesettingfield", auth, onlyAdminAccess, settingController.updateSettingField);
+router.get("/getsettingfield", auth, onlyAdminAccess, settingController.getSettingField);
+router.post("/deletesettingitem", auth, onlyAdminAccess, settingController.deleteSettingItem);
+
 module.exports = router;
