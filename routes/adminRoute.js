@@ -247,6 +247,10 @@ router.post(
   attendanceController.getAllAttendanceRecordsByDate
 );
 
+// Settings routes
+
+
+//timesheet
 router.post(
   "/updatetimesheetlimit",
   auth,
@@ -261,8 +265,96 @@ router.get(
   settingController.getTimesheetLimit
 );
 
-router.post("/updatesettingfield", auth, onlyAdminAccess, settingController.updateSettingField);
-router.get("/getsettingfield", auth, onlyAdminAccess, settingController.getSettingField);
-router.post("/deletesettingitem", auth, onlyAdminAccess, settingController.deleteSettingItem);
+
+//department
+router.post(
+  "/adddepartment",
+  auth,
+  onlyAdminAccess,
+  settingController.addDepartment
+)
+
+router.get(
+  "/getdepartment",
+  auth,
+  onlyAdminAccess,
+  settingController.getDepartments
+)
+
+router.post(
+  "/deletedepartment",
+  auth,
+  onlyAdminAccess,
+  settingController.deleteDepartment
+)
+
+
+//country
+router.post(
+  "/addcountry",
+  auth,
+  onlyAdminAccess,
+  settingController.addCountry
+)
+
+router.get(
+  "/getcountry",
+  auth,
+  onlyAdminAccess,
+  settingController.getCountries
+)
+
+router.post(
+  "/deletecountry",
+  auth,
+  onlyAdminAccess,
+  settingController.deleteCountry
+)
+
+
+//reportingTo
+router.post(
+  "/addreportingto",
+  auth,
+  onlyAdminAccess,
+  settingController.addReportingTo
+)
+
+router.get(
+  "/getreportingto",
+  auth,
+  onlyAdminAccess,
+  settingController.getReportingTo
+)
+
+router.post(
+  "/deletereportingto",
+  auth,
+  onlyAdminAccess,
+  settingController.deleteReportingTo
+)
+
+
+//designation
+router.post(
+  "/adddesignation",
+  auth,
+  onlyAdminAccess,
+  settingController.addDesignation
+)
+
+router.get(
+  "/getdesignation",
+  auth,
+  onlyAdminAccess,
+  settingController.getDesignations
+)
+
+router.post(
+  "/deletedesignation",
+  auth,
+  onlyAdminAccess,
+  settingController.deleteDesignation
+)
 
 module.exports = router;

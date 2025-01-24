@@ -1,5 +1,6 @@
 const Setting = require("../../model/settingsModel");
 
+// timesheet
 const updateTimesheetLimit = async (req, res) => {
   try {
     const { addtimesheetlimit, updatetimesheetlimit, deletetimesheetlimit } = req.body;
@@ -47,100 +48,320 @@ const getTimesheetLimit = async (req, res) => {
   }
 };
 
-const updateSettingField = async (req, res) => {
-  try {
-    const { field, value } = req.body; // Expect { field: 'department', value: ['IT', 'HR'] }
 
-    // Check if the field is valid
-    const validFields = ['department', 'country', 'reportingTo', 'designation'];
-    if (!validFields.includes(field)) {
+// department
+const addDepartment = async (req, res) => {
+  try {
+    const { departments } = req.body;
+    if (!departments || !Array.isArray(departments)) {
       return res.status(400).json({
         success: false,
-        msg: `Invalid field. Allowed fields are: ${validFields.join(', ')}`,
+        msg: "Departments array is required.",
       });
     }
 
-    // Find and update the specific field
     const updatedSetting = await Setting.findOneAndUpdate(
       {},
-      { $set: { [`${field}`]: value } }, // Dynamically update the field
+      { $addToSet: { department: { $each: departments } } },
       { new: true, upsert: true }
     );
 
     return res.status(200).json({
       success: true,
-      msg: `${field} updated successfully.`,
-      data: updatedSetting,
+      msg: "Departments added successfully.",
+      data: updatedSetting.department,
     });
   } catch (error) {
-    console.error("Error updating setting field:", error);
+    console.error("Error adding departments:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while updating setting field.",
+      msg: "An error occurred while adding departments.",
     });
   }
 };
 
-// Get settings for a specific field (department, country, reportingTo, designation)
-const getSettingField = async (req, res) => {
+const getDepartments = async (req, res) => {
   try {
-    const { field } = req.params; // Expected in URL: /settings/:field
-
-    // Check if the field is valid
-    const validFields = ['department', 'country', 'reportingTo', 'designation'];
-    if (!validFields.includes(field)) {
-      return res.status(400).json({
-        success: false,
-        msg: `Invalid field. Allowed fields are: ${validFields.join(', ')}`,
-      });
-    }
-
-    const setting = await Setting.findOne({}, field); // Retrieve the specific field
+    const settings = await Setting.findOne({}, "department");
     return res.status(200).json({
       success: true,
-      msg: `${field} fetched successfully.`,
-      data: setting ? setting[field] : [],
+      msg: "Departments fetched successfully.",
+      data: settings?.department || [],
     });
   } catch (error) {
-    console.error("Error fetching setting field:", error);
+    console.error("Error fetching departments:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while fetching setting field.",
+      msg: "An error occurred while fetching departments.",
     });
   }
 };
 
-// Delete a specific item from department, country, reportingTo, or designation
-const deleteSettingItem = async (req, res) => {
+const deleteDepartment = async (req, res) => {
   try {
-    const { field, item } = req.body; // Expected { field: 'department', item: 'HR' }
-
-    // Check if the field is valid
-    const validFields = ['department', 'country', 'reportingTo', 'designation'];
-    if (!validFields.includes(field)) {
+    const { departments } = req.body;
+    if (!departments || !Array.isArray(departments)) {
       return res.status(400).json({
         success: false,
-        msg: `Invalid field. Allowed fields are: ${validFields.join(', ')}`,
+        msg: "Departments array is required.",
       });
     }
 
-    // Dynamically remove the item from the array field
     const updatedSetting = await Setting.findOneAndUpdate(
       {},
-      { $pull: { [field]: item } }, // Removes the item from the field array
+      { $pull: { department: { $in: departments } } },
       { new: true }
     );
 
     return res.status(200).json({
       success: true,
-      msg: `Item removed from ${field} successfully.`,
-      data: updatedSetting,
+      msg: "Departments deleted successfully.",
+      data: updatedSetting.department,
     });
   } catch (error) {
-    console.error("Error deleting setting item:", error);
+    console.error("Error deleting departments:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while deleting setting item.",
+      msg: "An error occurred while deleting departments.",
+    });
+  }
+};
+
+
+// country
+const addCountry = async (req, res) => {
+  try {
+    const { countries } = req.body;
+    if (!countries || !Array.isArray(countries)) {
+      return res.status(400).json({
+        success: false,
+        msg: "Countries array is required.",
+      });
+    }
+
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $addToSet: { country: { $each: countries } } },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "Countries added successfully.",
+      data: updatedSetting.country,
+    });
+  } catch (error) {
+    console.error("Error adding countries:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while adding countries.",
+    });
+  }
+};
+
+const getCountries = async (req, res) => {
+  try {
+    const settings = await Setting.findOne({}, "country");
+    return res.status(200).json({
+      success: true,
+      msg: "Countries fetched successfully.",
+      data: settings?.country || [],
+    });
+  } catch (error) {
+    console.error("Error fetching countries:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while fetching countries.",
+    });
+  }
+};
+
+const deleteCountry = async (req, res) => {
+  try {
+    const { countries } = req.body;
+    if (!countries || !Array.isArray(countries)) {
+      return res.status(400).json({
+        success: false,
+        msg: "Countries array is required.",
+      });
+    }
+
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $pull: { country: { $in: countries } } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "Countries deleted successfully.",
+      data: updatedSetting.country,
+    });
+  } catch (error) {
+    console.error("Error deleting countries:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while deleting countries.",
+    });
+  }
+};
+
+
+//ReportingTo
+const addReportingTo = async (req, res) => {
+  try {
+    const { reportingTo } = req.body;
+    if (!reportingTo || !Array.isArray(reportingTo)) {
+      return res.status(400).json({
+        success: false,
+        msg: "ReportingTo array is required.",
+      });
+    }
+
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $addToSet: { reportingTo: { $each: reportingTo } } },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "ReportingTo added successfully.",
+      data: updatedSetting.reportingTo,
+    });
+  } catch (error) {
+    console.error("Error adding ReportingTo:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while adding ReportingTo.",
+    });
+  }
+};
+
+const getReportingTo = async (req, res) => {
+  try {
+    const settings = await Setting.findOne({}, "reportingTo");
+    return res.status(200).json({
+      success: true,
+      msg: "ReportingTo fetched successfully.",
+      data: settings?.reportingTo || [],
+    });
+  } catch (error) {
+    console.error("Error fetching ReportingTo:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while fetching ReportingTo.",
+    });
+  }
+};
+
+const deleteReportingTo = async (req, res) => {
+  try {
+    const { reportingTo } = req.body;
+    if (!reportingTo || !Array.isArray(reportingTo)) {
+      return res.status(400).json({
+        success: false,
+        msg: "ReportingTo array is required.",
+      });
+    }
+
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $pull: { reportingTo: { $in: reportingTo } } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "ReportingTo deleted successfully.",
+      data: updatedSetting.reportingTo,
+    });
+  } catch (error) {
+    console.error("Error deleting ReportingTo:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while deleting ReportingTo.",
+    });
+  }
+};
+
+
+// Designation
+const getDesignations = async (req, res) => {
+  try {
+    const settings = await Setting.findOne({}, "designation");
+    return res.status(200).json({
+      success: true,
+      msg: "Designations fetched successfully.",
+      data: settings?.designation || [],
+    });
+  } catch (error) {
+    console.error("Error fetching designations:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while fetching designations.",
+    });
+  }
+};
+
+const addDesignation = async (req, res) => {
+  try {
+    const { designation } = req.body;
+    if (!designation || typeof designation !== 'string') {
+      return res.status(400).json({
+        success: false,
+        msg: "Designation string is required.",
+      });
+    }
+
+    // Use $addToSet to ensure the designation is unique (no duplicates)
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $addToSet: { designation: designation } },
+      { new: true, upsert: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "Designation added successfully.",
+      data: updatedSetting.designation,
+    });
+  } catch (error) {
+    console.error("Error adding designation:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while adding the designation.",
+    });
+  }
+};
+
+
+const deleteDesignation = async (req, res) => {
+  try {
+    const { designation } = req.body;
+    if (!designation || typeof designation !== 'string') {
+      return res.status(400).json({
+        success: false,
+        msg: "Designation string is required.",
+      });
+    }
+
+    const updatedSetting = await Setting.findOneAndUpdate(
+      {},
+      { $pull: { designation: designation } },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      msg: "Designation deleted successfully.",
+      data: updatedSetting.designation,
+    });
+  } catch (error) {
+    console.error("Error deleting designation:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while deleting the designation.",
     });
   }
 };
@@ -150,7 +371,16 @@ const deleteSettingItem = async (req, res) => {
 module.exports = {
   updateTimesheetLimit,
   getTimesheetLimit,
-  updateSettingField,
-  getSettingField,
-  deleteSettingItem
+  addDepartment,
+  getDepartments,
+  deleteDepartment,
+  addCountry,
+  getCountries,
+  deleteCountry,
+  addReportingTo,
+  getReportingTo,
+  deleteReportingTo,
+  getDesignations,
+  addDesignation,
+  deleteDesignation
 };
