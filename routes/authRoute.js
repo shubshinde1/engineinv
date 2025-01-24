@@ -31,7 +31,7 @@ router.post(
 
 router.post("/login", loginValidator, authController.loginEmployee);
 
-// router.post("/loginstep2", otpValidator, authController.verifyotp);
+router.post("/loginstep2", otpValidator, authController.verifyotp);
 
 router.post(
   "/forgotpassword",
