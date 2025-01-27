@@ -366,6 +366,23 @@ const deleteDesignation = async (req, res) => {
   }
 };
 
+const getAllSettings = async (req, res) => {
+  try {
+    const settings = await Setting.find({});
+    return res.status(200).json({
+      success: true,
+      msg: "Settings fetched successfully.",
+      data: settings,
+    });
+  } catch (error) {
+    console.error("Error fetching settings:", error);
+    return res.status(500).json({
+      success: false,
+      msg: "An error occurred while fetching settings.",
+    });
+  }
+};
+
 
 
 
@@ -383,5 +400,6 @@ module.exports = {
   deleteReportingTo,
   getDesignations,
   addDesignation,
-  deleteDesignation
+  deleteDesignation,
+  getAllSettings
 };

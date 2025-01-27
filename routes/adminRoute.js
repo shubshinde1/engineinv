@@ -357,4 +357,11 @@ router.post(
   settingController.deleteDesignation
 )
 
+router.get(
+  "/getallsettings",
+  auth,
+  onlyAdminAccess,
+  settingController.getAllSettings
+)
+
 module.exports = router;
