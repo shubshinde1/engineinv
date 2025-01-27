@@ -338,33 +338,34 @@ const addDesignation = async (req, res) => {
 
 const deleteDesignation = async (req, res) => {
   try {
-    const { designation } = req.body;
-    if (!designation || typeof designation !== 'string') {
+    const { designations } = req.body; // Expecting an array of designations
+    if (!designations || !Array.isArray(designations)) {
       return res.status(400).json({
         success: false,
-        msg: "Designation string is required.",
+        msg: "Designations array is required.",
       });
     }
 
     const updatedSetting = await Setting.findOneAndUpdate(
       {},
-      { $pull: { designation: designation } },
+      { $pull: { designation: { $in: designations } } }, // Pull all designations from the array
       { new: true }
     );
 
     return res.status(200).json({
       success: true,
-      msg: "Designation deleted successfully.",
+      msg: "Designations deleted successfully.",
       data: updatedSetting.designation,
     });
   } catch (error) {
-    console.error("Error deleting designation:", error);
+    console.error("Error deleting designations:", error);
     return res.status(500).json({
       success: false,
-      msg: "An error occurred while deleting the designation.",
+      msg: "An error occurred while deleting designations.",
     });
   }
 };
+
 
 
 
