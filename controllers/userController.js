@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
 
     const rowpassword = randomstring.generate(10);
     // const rowpassword = "Tomhardy@12";
-    const hashPassword = await bcrypt.hash(rowpassword, 10);
+    const hashPassword = await bcrypt.hash(rowpassword, 12);
 
     var obj = {
       name,
@@ -253,7 +253,7 @@ const updatePassword = async (req, res) => {
       });
     }
 
-    const newHashedPassword = await bcrypt.hash(confirmpassword, 10);
+    const newHashedPassword = await bcrypt.hash(confirmpassword, 12);
 
     await Employee.findByIdAndUpdate(
       { _id: emp_id },
@@ -436,7 +436,7 @@ const updateUser = async (req, res) => {
 
     const newPassword = req.body.password;
     if (newPassword) {
-      const hashPassword = await bcrypt.hash(newPassword, 10);
+      const hashPassword = await bcrypt.hash(newPassword, 12);
       updateObj.password = hashPassword;
     }
 

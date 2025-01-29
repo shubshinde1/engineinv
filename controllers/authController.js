@@ -38,7 +38,7 @@ const registerEmployee = async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const employee = new Employee({
       empid,
@@ -383,7 +383,7 @@ const updateemployeebyadmin = async (req, res) => {
 
     const newPassword = req.body.password;
     if (newPassword) {
-      const hashPassword = await bcrypt.hash(newPassword, 10);
+      const hashPassword = await bcrypt.hash(newPassword, 12);
       updateObj.password = hashPassword;
     }
 
@@ -533,7 +533,7 @@ module.exports = {
 //       });
 //     }
 
-//     const hashedPassword = await bcrypt.hash(password, 10);
+//     const hashedPassword = await bcrypt.hash(password, 12);
 
 //     const employee = new Employee({
 //       empid,
@@ -1014,7 +1014,7 @@ module.exports = {
 
 //     const newPassword = req.body.password;
 //     if (newPassword) {
-//       const hashPassword = await bcrypt.hash(newPassword, 10);
+//       const hashPassword = await bcrypt.hash(newPassword, 12);
 //       updateObj.password = hashPassword;
 //     }
 
