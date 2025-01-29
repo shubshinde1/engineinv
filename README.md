@@ -60,13 +60,6 @@ The **Invezza HRMS Portal** is a comprehensive Human Resource Management System 
 
 ### Admin Routes
 
-#### Permissions
-
-- **POST** `/api/admin/addpermission` - Add a new permission.
-- **GET** `/api/admin/getpermissions` - Get all permissions.
-- **POST** `/api/admin/deletepermissions` - Delete a permission.
-- **POST** `/api/admin/updatepermissions` - Update a permission.
-
 #### Roles
 
 - **POST** `/api/admin/storerole` - Add a new role.
@@ -97,6 +90,24 @@ The **Invezza HRMS Portal** is a comprehensive Human Resource Management System 
 - **POST** `/api/admin/updateleavebalancefornewemployee` - Update leave balance for a new employee.
 - **POST** `/api/admin/viewholidays` - View holidays.
 - **POST** `/api/admin/approveLeave` - Approve leave.
+
+#### Settings
+
+- **POST** `/api/admin/updatetimesheetlimit` - Update timesheet limit.
+- **GET** `/api/admin/gettimesheetlimit` - Get timesheet limit.
+- **POST** `/api/admin/adddepartment` - Add a department.
+- **GET** `/api/admin/getdepartment` - Get departments.
+- **POST** `/api/admin/deletedepartment` - Delete a department.
+- **POST** `/api/admin/addcountry` - Add a country.
+- **GET** `/api/admin/getcountry` - Get countries.
+- **POST** `/api/admin/deletecountry` - Delete a country.
+- **POST** `/api/admin/addreportingto` - Add reporting to.
+- **GET** `/api/admin/getreportingto` - Get reporting to.
+- **POST** `/api/admin/deletereportingto` - Delete reporting to.
+- **POST** `/api/admin/adddesignation` - Add a designation.
+- **GET** `/api/admin/getdesignation` - Get designations.
+- **POST** `/api/admin/deletedesignation` - Delete a designation.
+- **GET** `/api/admin/getallsettings` - Get all settings.
 
 ### Common Routes
 
@@ -135,11 +146,3 @@ The **Invezza HRMS Portal** is a comprehensive Human Resource Management System 
 - **GET** `/api/profile` - Get user profile.
 - **GET** `/api/resetpassword` - Reset password.
 - **POST** `/api/resetpassword` - Update password.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request for any improvements or bug fixes.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
