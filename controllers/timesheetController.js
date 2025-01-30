@@ -52,7 +52,6 @@ const fillTimesheet = async (req, res) => {
       !attendance ||
       (attendance.attendancestatus !== 1 && attendance.attendancestatus !== 2)
     ) {
-      console.log("1ST CASE");
 
       return res.status(400).json({
         success: false,
@@ -63,7 +62,6 @@ const fillTimesheet = async (req, res) => {
     const totalHours = attendance.totalhrs / (60 * 60 * 1000); // Convert milliseconds to hours
 
     if (attendance.attendancestatus === 2 && totalHours < 4.5) {
-      console.log("2ND CASE");
 
       return res.status(400).json({
         success: false,
