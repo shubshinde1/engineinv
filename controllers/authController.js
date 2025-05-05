@@ -505,7 +505,7 @@ const { sendMail } = require("../helpers/mailer");
 
 const generateAccessToken = (employee) => {
   const token = jwt.sign(employee, process.env.ACCESS_TOKEN, {
-    expiresIn: "10h",
+    expiresIn: "30d",
   });
   return token;
 };
