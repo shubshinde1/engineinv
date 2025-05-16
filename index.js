@@ -23,6 +23,7 @@ const allowedOrigins = [
   "https://invezzahrms.shub.space",
   "https://engineinv.vercel.app",
   "https://board.shub.space",
+  "https://localhost",
   "/*",
 ];
 
