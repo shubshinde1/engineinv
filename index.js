@@ -24,6 +24,7 @@ const allowedOrigins = [
   "https://engineinv.vercel.app",
   "https://board.shub.space",
   "https://localhost",
+  "https://invhrms.vercel.app",
   "/*",
 ];
 
